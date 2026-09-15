@@ -132,6 +132,12 @@
   user-select: none;
 }
 
+.spacer {
+  flex: 0 0 auto;
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .card {
   position: relative;
   flex: 0 0 auto;

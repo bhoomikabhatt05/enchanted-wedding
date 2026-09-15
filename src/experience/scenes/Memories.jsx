@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { memories } from "../../lib/content";
 import { images } from "../../lib/images";
 import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
@@ -13,6 +13,8 @@ const MOMENTUM_STOP = 0.5;
 export default function Memories() {
   const rootRef = useRef(null);
   const trackRef = useRef(null);
+  const leadSpaceRef = useRef(null);
+  const trailSpaceRef = useRef(null);
   const reducedMotion = usePrefersReducedMotion();
   const [activeIndex, setActiveIndex] = useState(0);
   const drag = useRef({ active: false, startX: 0, startScroll: 0, vel: 0, lastX: 0, lastT: 0, raf: 0 });
@@ -25,33 +27,81 @@ export default function Memories() {
 
   useScrollReveal(rootRef, { reducedMotion, y: 24, stagger: 0.1 });
 
-  const syncActive = () => {
+  const syncActive = useCallback(() => {
     const track = trackRef.current;
     if (!track) return;
     const cards = [...track.querySelectorAll("[data-memory]")];
     if (!cards.length) return;
+    const trackRect = track.getBoundingClientRect();
     const center = track.scrollLeft + track.clientWidth / 2;
     let bestIndex = 0;
     let bestDistance = Infinity;
     cards.forEach((card, index) => {
       const rect = card.getBoundingClientRect();
-      const trackRect = track.getBoundingClientRect();
       const mid = rect.left - trackRect.left + rect.width / 2 + track.scrollLeft;
       const distance = Math.abs(mid - center);
       if (distance < bestDistance) {
         bestDistance = distance;
         bestIndex = index;
       }
-      card.classList.toggle(styles.lit, distance < rect.width * 0.62);
+    });
+    cards.forEach((card, index) => {
+      card.classList.toggle(styles.lit, index === bestIndex);
       card.setAttribute("aria-selected", String(index === bestIndex));
     });
     setActiveIndex((previous) => (previous === bestIndex ? previous : bestIndex));
-  };
+  }, []);
+
+  const measure = useCallback(() => {
+    const track = trackRef.current;
+    const lead = leadSpaceRef.current;
+    const trail = trailSpaceRef.current;
+    if (!track || !lead || !trail) return;
+    const cards = track.querySelectorAll("[data-memory]");
+    if (!cards.length) return;
+    const first = cards[0];
+    const last = cards[cards.length - 1];
+    const clientWidth = track.clientWidth;
+    const center = clientWidth / 2;
+    const contentX = (el) => el.getBoundingClientRect().left - track.getBoundingClientRect().left + track.scrollLeft;
+    const cardWidth = first.getBoundingClientRect().width;
+    const lastCenter = (el) => contentX(el) + el.getBoundingClientRect().width / 2;
+    lead.style.width = "0px";
+    trail.style.width = "0px";
+    void track.offsetWidth;
+    const firstLeft = contentX(first);
+    const lastCenterBase = lastCenter(last);
+    const maxScrollBase = track.scrollWidth - clientWidth;
+    const leadWidth = Math.max(0, center - firstLeft - cardWidth / 2);
+    const trailWidth = Math.max(0, lastCenterBase - maxScrollBase - center);
+    lead.style.width = `${leadWidth}px`;
+    trail.style.width = `${trailWidth}px`;
+    syncActive();
+  }, [syncActive]);
 
   useEffect(() => {
-    const frame = requestAnimationFrame(syncActive);
-    return () => cancelAnimationFrame(frame);
-  }, []);
+    let raf = 0;
+    const refresh = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => measure());
+    };
+    measure();
+    if (document.fonts && typeof document.fonts.ready?.then === "function") {
+      document.fonts.ready
+        .then(() => {
+          cancelAnimationFrame(raf);
+          raf = requestAnimationFrame(() => measure());
+        })
+        .catch(() => {});
+    }
+    window.addEventListener("resize", refresh);
+    window.addEventListener("orientationchange", refresh);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", refresh);
+      window.removeEventListener("orientationchange", refresh);
+    };
+  }, [measure]);
 
   const handleDistortion = (event) => {
     if (reducedMotion) return;
@@ -177,9 +227,10 @@ export default function Memories() {
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={endDrag}
-          onPointerCancel={endDrag}
-        >
-          {memories.items.map((item, index) => (
+onPointerCancel={endDrag}
+          >
+            <span ref={leadSpaceRef} className={styles.spacer} aria-hidden="true" />
+            {memories.items.map((item, index) => (
             <figure
               key={item.title}
               className={styles.card}
@@ -215,7 +266,8 @@ export default function Memories() {
               </figcaption>
             </figure>
           ))}
-        </div>
+            <span ref={trailSpaceRef} className={styles.spacer} aria-hidden="true" />
+          </div>
         <div className={styles.railFadeL} aria-hidden="true" />
         <div className={styles.railFadeR} aria-hidden="true" />
       </div>
