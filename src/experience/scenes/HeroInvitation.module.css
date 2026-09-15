@@ -6,8 +6,8 @@
   align-items: center;
   justify-content: center;
   min-height: 100svh;
-  padding: calc(var(--space-2xl) + env(safe-area-inset-top)) var(--page-pad)
-    calc(var(--space-2xl) + env(safe-area-inset-bottom));
+  padding: calc(var(--space-xl) + env(safe-area-inset-top)) var(--page-pad)
+    calc(var(--space-xl) + env(safe-area-inset-bottom));
   text-align: center;
 }
 

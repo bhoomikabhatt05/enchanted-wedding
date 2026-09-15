@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-2xl) var(--page-pad);
+  padding: var(--space-xl) var(--page-pad);
   background: linear-gradient(180deg, #081020 0%, #0b1422 60%, #0a1118 100%);
 }
 

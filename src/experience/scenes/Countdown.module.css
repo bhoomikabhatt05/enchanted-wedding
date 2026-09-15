@@ -5,8 +5,8 @@
   flex-direction: column;
   align-items: center;
   min-height: 100svh;
-  padding: calc(var(--space-2xl) + env(safe-area-inset-top)) var(--page-pad)
-    calc(var(--space-2xl) + env(safe-area-inset-bottom));
+  padding: calc(var(--space-xl) + env(safe-area-inset-top)) var(--page-pad)
+    calc(var(--space-xl) + env(safe-area-inset-bottom));
   text-align: center;
   background:
     radial-gradient(100% 55% at 50% 20%, rgba(201, 169, 107, 0.05), transparent 55%),

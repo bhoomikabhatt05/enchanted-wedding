@@ -1,7 +1,7 @@
 .stage {
   position: relative;
   min-height: 100svh;
-  padding: var(--space-2xl) var(--page-pad);
+  padding: var(--space-xl) var(--page-pad);
   display: flex;
   align-items: center;
   justify-content: center;

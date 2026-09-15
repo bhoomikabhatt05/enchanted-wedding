@@ -1,6 +1,6 @@
 .scroll {
   position: relative;
-  height: 460vh;
+  height: 200vh;
   background: #02050b;
 }
 
@@ -51,7 +51,7 @@
   position: absolute;
   inset: 0;
   z-index: 3;
-  opacity: 0;
+  opacity: 0.35;
   background:
     radial-gradient(110% 70% at 50% 36%, rgba(26, 38, 62, 0.5), transparent 62%),
     linear-gradient(180deg, #02050b 0%, #070d16 55%, #0b1422 100%);

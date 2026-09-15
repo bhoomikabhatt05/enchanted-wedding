@@ -1,7 +1,7 @@
 .stage {
   position: relative;
   min-height: 100svh;
-  padding: calc(var(--space-2xl) + 2rem) var(--page-pad) var(--space-2xl);
+  padding: calc(var(--space-xl) + 1.5rem) var(--page-pad) var(--space-xl);
   overflow: hidden;
   background:
     radial-gradient(120% 80% at 50% -10%, rgba(64, 92, 122, 0.35), transparent 60%),

@@ -1,7 +1,7 @@
 .stage {
   position: relative;
   min-height: 100svh;
-  padding: var(--space-2xl) 0 calc(var(--space-2xl) + 1rem);
+  padding: var(--space-xl) 0 calc(var(--space-l) + 1rem);
   overflow: hidden;
   display: flex;
   flex-direction: column;

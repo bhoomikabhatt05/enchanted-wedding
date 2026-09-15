@@ -40,6 +40,11 @@ export default function StarChartOpening() {
         line.style.strokeDashoffset = `${beamLength}`;
       }
 
+      const night = q("[data-night]")[0];
+
+      // Hold the copy until the intro calls it in (prevents a pre-chart flash).
+      gsap.set(q("[data-title]"), { opacity: 0 });
+
       if (reducedMotion) {
         gsap.set(q("[data-settle]"), { opacity: 1 });
         gsap.set(q("[data-chart]"), { opacity: 1, scale: 1 });
@@ -48,10 +53,56 @@ export default function StarChartOpening() {
         if (line) line.style.strokeDashoffset = "0";
         gsap.set(q("[data-caption]"), { opacity: 1, y: 0 });
         gsap.set(q("[data-verse]"), { opacity: 1, y: 0 });
+        gsap.set(q("[data-hint]"), { opacity: 1 });
+        if (night) gsap.set(night, { opacity: 0.45 });
         return;
       }
 
-      const tl = gsap.timeline({
+      // ── Part 1 · Automatic cinematic intro (plays without scrolling) ──
+      // Darkness and stars breathe in the first second, then the chart
+      // emerges, the fated stars ignite, and the constellation draws itself.
+      const intro = gsap.timeline({ defaults: { ease: "power2.out" } });
+
+      intro.fromTo(q("[data-glow]"), { opacity: 0 }, { opacity: 1, duration: 0.9 }, 0.15);
+      intro.fromTo(
+        q("[data-chart]"),
+        { opacity: 0, scale: 1.14 },
+        { opacity: 1, scale: 1.04, duration: 1.6 },
+        0.4
+      );
+      intro.fromTo(q("[data-title]"), { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.9 }, 1.7);
+
+      // Chart stars ignite in waves.
+      intro.fromTo(q("[data-glint]"), { opacity: 0 }, { opacity: 0.85, duration: 1.1, stagger: 0.04 }, 2.1);
+
+      // The two fated stars flare brighter than the rest.
+      intro.fromTo(
+        q("[data-twin]"),
+        { opacity: 0, scale: 0.4, transformOrigin: "center", transformBox: "fill-box" },
+        { opacity: 1, scale: 1, duration: 0.9, stagger: 0.35, ease: "power1.out" },
+        3.0
+      );
+
+      // A thin antique-gold line joins them — the constellation forms.
+      if (line) {
+        intro.to(line, { strokeDashoffset: 0, duration: 1.0, ease: "power1.inOut" }, 3.7);
+      }
+      intro.fromTo(q("[data-caption]"), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.75 }, 4.6);
+
+      // The verse arrives as the camera breathes in.
+      intro.to(q("[data-chart]"), { scale: 1.08, duration: 1.4 }, 5.2);
+      intro.fromTo(q("[data-verse]"), { opacity: 0 }, { opacity: 1, duration: 0.5 }, 5.2);
+      intro.fromTo(q("[data-verse-a]"), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6 }, 5.2);
+      intro.fromTo(q("[data-verse-b]"), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6 }, 5.7);
+
+      // Nudge the candlelight and reveal the scroll cue.
+      intro.to(q("[data-glow]"), { opacity: 0.6, duration: 1.2, ease: "sine.inOut" }, 6.0);
+      intro.fromTo(q("[data-hint]"), { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.7 }, 6.3);
+
+      // ── Part 2 · Scroll-driven handoff to the invitation ──
+      // Once the intro has played, scrubbing dissolves the chart into the
+      // living night sky and hands off smoothly to the hero chapter.
+      const scrub = gsap.timeline({
         defaults: { ease: "none" },
         scrollTrigger: {
           trigger: root,
@@ -61,46 +112,11 @@ export default function StarChartOpening() {
         },
       });
 
-      // 1. Darkness lifts, candlelight breathes, chart emerges.
-      tl.fromTo(q("[data-glow]"), { opacity: 0 }, { opacity: 1, duration: 1 }, 0);
-      tl.fromTo(
-        q("[data-chart]"),
-        { opacity: 0, scale: 1.14 },
-        { opacity: 1, scale: 1.04, duration: 2 },
-        0.2
-      );
-      tl.fromTo(q("[data-title]"), { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 1 }, 0.7);
-
-      // 2. Chart stars ignite one field at a time.
-      tl.fromTo(q("[data-glint]"), { opacity: 0 }, { opacity: 0.85, duration: 1.2, stagger: 0.03 }, 1.4);
-
-      // 3. The two fated stars flare brighter than the rest.
-      tl.fromTo(
-        q("[data-twin]"),
-        { opacity: 0, scale: 0.4, transformOrigin: "center", transformBox: "fill-box" },
-        { opacity: 1, scale: 1, duration: 0.9, stagger: 0.35, ease: "power1.out" },
-        2.2
-      );
-
-      // 4. A thin antique-gold line joins them — the constellation forms.
-      if (line) {
-        tl.to(line, { strokeDashoffset: 0, duration: 1.1, ease: "power1.inOut" }, 2.7);
-      }
-      tl.fromTo(q("[data-caption]"), { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.8 }, 3.1);
-
-      // 5. The verse arrives as the camera pushes in.
-      tl.to(q("[data-chart]"), { scale: 1.16, duration: 1.6 }, 3.6);
-      tl.fromTo(q("[data-verse]"), { opacity: 0 }, { opacity: 1, duration: 0.6 }, 3.8);
-      tl.fromTo(q("[data-verse-a]"), { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.7 }, 3.8);
-      tl.fromTo(q("[data-verse-b]"), { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.7 }, 4.15);
-
-      // 6. The chart dissolves into living night sky.
-      tl.to(q("[data-chart]"), { opacity: 0, scale: 1.28, filter: "blur(6px)", duration: 1.4 }, 4.9);
-      tl.to(q("[data-chart-ui]"), { opacity: 0, duration: 0.8 }, 4.9);
-      tl.fromTo(q("[data-night]"), { opacity: 0 }, { opacity: 1, duration: 1.4 }, 5.1);
-      tl.to(q("[data-title]"), { opacity: 0, y: -30, duration: 0.8 }, 5.2);
-      tl.to(q("[data-caption]"), { opacity: 0, duration: 0.6 }, 5.2);
-      tl.to(q("[data-hint]"), { opacity: 0, duration: 0.5 }, 0.6);
+      scrub.to(q("[data-hint]"), { opacity: 0, duration: 0.2 }, 0.12);
+      scrub.to(q("[data-chart]"), { scale: 1.14, duration: 0.3 }, 0);
+      scrub.to(q("[data-chart]"), { opacity: 0, scale: 1.28, filter: "blur(6px)", duration: 0.4 }, 0.5);
+      scrub.to(q("[data-chart-ui]"), { opacity: 0, duration: 0.25 }, 0.55);
+      scrub.fromTo(night, { opacity: 0.35 }, { opacity: 1, duration: 0.4 }, 0.55);
     },
     { scope: rootRef, dependencies: [reducedMotion] }
   );
