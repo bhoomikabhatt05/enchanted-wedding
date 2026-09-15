@@ -1,0 +1,27 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-s);
+  width: 100%;
+  border: 0;
+  background: transparent;
+}
+
+.line {
+  flex: 1;
+  height: 1px;
+  max-width: 7.5rem;
+  background: linear-gradient(90deg, transparent, var(--color-antique-gold));
+}
+
+.line:last-child {
+  background: linear-gradient(90deg, var(--color-antique-gold), transparent);
+}
+
+.mark {
+  width: 0.4rem;
+  height: 0.4rem;
+  rotate: 45deg;
+  border: 1px solid color-mix(in srgb, var(--color-antique-gold) 80%, transparent);
+}

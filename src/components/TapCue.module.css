@@ -1,0 +1,41 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: var(--tap);
+  color: color-mix(in srgb, var(--color-antique-gold) 75%, var(--color-warm-champagne));
+}
+
+.ring {
+  position: relative;
+  width: 1.55rem;
+  height: 1.55rem;
+  border: 1px solid var(--color-antique-gold);
+  border-radius: 50%;
+}
+
+.ring::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: inherit;
+  border: 1px solid color-mix(in srgb, var(--color-antique-gold) 55%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ring::after {
+    animation: breathe 2.8s var(--ease-out) infinite;
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

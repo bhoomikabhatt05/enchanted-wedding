@@ -1,0 +1,44 @@
+.root {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: var(--tap);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: color-mix(in srgb, var(--color-antique-gold) 80%, var(--color-warm-champagne));
+  cursor: pointer;
+}
+
+.line {
+  width: 1px;
+  height: 2.4rem;
+  background: linear-gradient(var(--color-antique-gold), transparent);
+  transform-origin: top;
+}
+
+.dot {
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 50%;
+  border: 1px solid var(--color-antique-gold);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .line {
+    animation: cue 1.8s var(--ease-out) infinite;
+  }
+}
+
+@keyframes cue {
+  0%,
+  100% {
+    transform: scaleY(0.55);
+    opacity: 0.45;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}

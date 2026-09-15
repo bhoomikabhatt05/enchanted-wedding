@@ -1,0 +1,118 @@
+.root {
+  --af-sil: rgba(12, 10, 8, 0.94);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transform: translateZ(0);
+}
+
+/* ---- tones ---------------------------------------------------------- */
+
+.tone-sunset {
+  --af-bg-1: #573a2c;
+  --af-bg-2: #2a1c1c;
+  --af-glow: rgba(233, 183, 126, 0.55);
+  --af-rim: rgba(255, 214, 159, 0.5);
+}
+.tone-snow {
+  --af-bg-1: #46586e;
+  --af-bg-2: #141c30;
+  --af-glow: rgba(203, 228, 250, 0.5);
+  --af-rim: rgba(226, 240, 255, 0.55);
+}
+.tone-garden {
+  --af-bg-1: #3a4a34;
+  --af-bg-2: #17201c;
+  --af-glow: rgba(211, 199, 133, 0.5);
+  --af-rim: rgba(226, 214, 155, 0.5);
+}
+.tone-night {
+  --af-bg-1: #1d2c45;
+  --af-bg-2: #0a101d;
+  --af-glow: rgba(171, 196, 235, 0.4);
+  --af-rim: rgba(201, 169, 107, 0.4);
+}
+.tone-dreamer {
+  --af-bg-1: #6b3a3f;
+  --af-bg-2: #22151c;
+  --af-glow: rgba(248, 196, 143, 0.5);
+  --af-rim: rgba(232, 215, 181, 0.5);
+}
+.tone-adventurer {
+  --af-bg-1: #2e4736;
+  --af-bg-2: #0f1616;
+  --af-glow: rgba(214, 187, 122, 0.45);
+  --af-rim: rgba(201, 169, 107, 0.42);
+}
+
+/* ---- shapes --------------------------------------------------------- */
+
+.shape-portrait {
+  aspect-ratio: 3 / 4;
+}
+.shape-square {
+  aspect-ratio: 1 / 1;
+}
+.shape-round {
+  border-radius: 50%;
+  aspect-ratio: 1 / 1;
+}
+.shape-wide {
+  aspect-ratio: 4 / 3;
+}
+
+/* ---- layers --------------------------------------------------------- */
+
+.atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(130% 90% at 30% 12%, var(--af-glow), transparent 62%),
+    linear-gradient(175deg, var(--af-bg-1) 8%, var(--af-bg-2) 82%);
+}
+
+.rim {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 42px 10px rgba(6, 8, 14, 0.55),
+    0 1px 0 rgba(255, 235, 200, 0.18);
+  border: 1px solid rgba(255, 230, 190, 0.16);
+}
+
+.figure {
+  position: absolute;
+  left: 50%;
+  bottom: -2%;
+  width: 78%;
+  height: 78%;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+.figure svg {
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+  filter: drop-shadow(0 -8px 26px rgba(255, 226, 182, 0.14));
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background-image: url("/film-grain.svg");
+  background-size: 180px 180px;
+  opacity: 0.11;
+  mix-blend-mode: overlay;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border-radius: inherit;
+  background: radial-gradient(120% 120% at 50% 42%, transparent 55%, rgba(4, 5, 10, 0.5) 100%);
+}

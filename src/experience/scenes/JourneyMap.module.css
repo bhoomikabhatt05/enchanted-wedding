@@ -1,0 +1,318 @@
+.scroll {
+  position: relative;
+  height: 460vh;
+  background: #0c1424;
+}
+
+.viewport {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.mapSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: sepia(0.18) saturate(1.02) contrast(1.03) brightness(0.9);
+}
+
+.mapSvg [data-map-node] {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 0.5s ease;
+  will-change: transform, opacity;
+}
+
+.mapShade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(90% 64% at 50% 44%, transparent 48%, rgba(4, 7, 14, 0.5) 80%, rgba(2, 4, 9, 0.85) 100%),
+    linear-gradient(180deg, rgba(3, 6, 12, 0.6) 0%, transparent 20%, transparent 72%, rgba(3, 6, 12, 0.72) 100%);
+}
+
+.mapGrain {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-image: url("/film-grain.svg");
+  background-size: 170px 170px;
+  opacity: 0.1;
+  mix-blend-mode: overlay;
+}
+
+.intro {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-s);
+  padding: 0 var(--page-pad);
+  text-align: center;
+  pointer-events: none;
+}
+
+.chapter {
+  color: var(--color-antique-gold);
+}
+
+.introLine {
+  margin: 0;
+  max-width: 26rem;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.7rem, 6.4vw, 2.8rem);
+  line-height: 1.2;
+  color: var(--color-warm-champagne);
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.7);
+  text-wrap: balance;
+}
+
+.cue {
+  margin-top: var(--space-m);
+}
+
+/* ── Journal cards: memories discovered on the route ── */
+
+.journal {
+  position: absolute;
+  right: 0;
+  bottom: calc(4.4rem + env(safe-area-inset-bottom));
+  left: 0;
+  z-index: 4;
+  display: grid;
+  justify-items: center;
+  padding: 0 var(--page-pad);
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+.journalHidden {
+  opacity: 0;
+}
+
+.card {
+  grid-area: 1 / 1;
+  width: min(22rem, 100%);
+  opacity: 0;
+  translate: 0 26px;
+  transition: opacity 0.6s ease, translate 0.6s ease;
+  visibility: hidden;
+}
+
+.cardActive {
+  opacity: 1;
+  translate: 0 0;
+  visibility: visible;
+  transition-delay: 0.1s;
+}
+
+.photoWrap {
+  position: relative;
+  transform: rotate(-1.2deg);
+  box-shadow: 0 24px 54px rgba(0, 0, 0, 0.55);
+}
+
+.tiltRight {
+  transform: rotate(1.1deg);
+}
+
+.tiltLeft {
+  transform: rotate(-1.2deg);
+}
+
+.photo {
+  border: 6px solid #efe6cf;
+  border-bottom-width: 26px;
+}
+
+.tape {
+  position: absolute;
+  top: -0.65rem;
+  left: 50%;
+  width: 4.6rem;
+  height: 1.3rem;
+  translate: -50% 0;
+  rotate: -3deg;
+  background: linear-gradient(180deg, rgba(232, 215, 181, 0.75), rgba(216, 197, 160, 0.55));
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  opacity: 0.9;
+}
+
+.pin {
+  position: absolute;
+  top: -0.5rem;
+  left: 50%;
+  width: 0.7rem;
+  height: 0.7rem;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #e88d8d, #641f2b 70%);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.year {
+  position: absolute;
+  right: 0.7rem;
+  bottom: 0.35rem;
+  font-family: var(--font-numeral);
+  font-size: 1rem;
+  letter-spacing: 0.14em;
+  color: rgba(42, 34, 24, 0.66);
+}
+
+.cardCopy {
+  margin-top: 0.8rem;
+  text-align: center;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.85);
+}
+
+.dateLabel {
+  margin: 0;
+  font-family: var(--font-label);
+  font-size: 0.68rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-antique-gold);
+}
+
+.title {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 6vw, 2rem);
+  color: var(--color-warm-champagne);
+}
+
+.annotation {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-script);
+  font-size: 1.5rem;
+  color: var(--color-warm-champagne);
+}
+
+.note {
+  margin: 0.3rem auto 0;
+  max-width: 22rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-style: italic;
+  line-height: 1.55;
+  color: rgba(232, 215, 181, 0.88);
+}
+
+/* ── Route progress ── */
+
+.progress {
+  position: absolute;
+  right: var(--page-pad);
+  bottom: calc(1.4rem + env(safe-area-inset-bottom));
+  left: var(--page-pad);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.progressTrack {
+  height: 1px;
+  background: rgba(201, 169, 107, 0.25);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #8a6a3a, #f0d896);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.progressTicks {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+
+.tick {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(201, 169, 107, 0.3);
+  transition: background 0.4s, box-shadow 0.4s;
+}
+
+.tickLit {
+  background: #ffe9ad;
+  box-shadow: 0 0 8px rgba(255, 233, 173, 0.9);
+}
+
+.closing {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0 var(--page-pad);
+  text-align: center;
+  opacity: 0;
+  translate: 0 16px;
+  transition: opacity 0.8s ease, translate 0.8s ease;
+  pointer-events: none;
+}
+
+.closingVisible {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.closingMotif {
+  width: 7rem;
+  color: var(--color-warm-champagne);
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
+}
+
+.closingLine {
+  margin: 0;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: rgba(232, 215, 181, 0.9);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+@media (min-width: 768px) {
+  .journal {
+    bottom: auto;
+    top: 50%;
+    translate: 0 -50%;
+    justify-items: end;
+    padding-right: max(var(--page-pad), 8vw);
+  }
+
+  .card {
+    width: min(24rem, 38vw);
+  }
+
+  .introLine {
+    max-width: 34rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .closing {
+    transition: none;
+  }
+}

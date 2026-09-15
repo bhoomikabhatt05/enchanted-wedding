@@ -1,0 +1,39 @@
+.root {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 5.25rem;
+  height: 5.25rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-seal);
+  background:
+    radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--color-deep-burgundy) 70%, #8a3a46), var(--color-deep-burgundy) 62%);
+  color: var(--color-antique-gold);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-antique-gold) 42%, transparent),
+    inset 0 0 0 6px color-mix(in srgb, var(--color-deep-burgundy) 80%, #2a0c12),
+    0 8px 18px rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+}
+
+.root::before {
+  content: "";
+  position: absolute;
+  inset: 0.55rem;
+  border-radius: inherit;
+  border: 1px solid color-mix(in srgb, var(--color-antique-gold) 40%, transparent);
+}
+
+.root:focus-visible {
+  outline: 1px solid var(--color-antique-gold);
+  outline-offset: 4px;
+}
+
+.mark {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}

@@ -1,0 +1,43 @@
+@import "./reset.css";
+@import "./tokens.css";
+@import "./materials.css";
+
+html {
+  color-scheme: dark;
+  background: var(--color-night-deep);
+  /* clip (not hidden): contains horizontal overflow without creating a
+     scroll container, so position: sticky keeps working. */
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-antique-gold) 35%, var(--color-midnight-navy));
+  color: var(--color-warm-champagne);
+}
+
+body {
+  min-height: 100%;
+  font-family: var(--font-body);
+  color: var(--color-warm-champagne);
+  background: var(--color-midnight-navy);
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

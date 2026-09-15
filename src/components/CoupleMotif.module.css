@@ -1,0 +1,44 @@
+.root {
+  display: block;
+  width: min(19rem, 78vw);
+  height: auto;
+  color: var(--color-warm-champagne);
+}
+
+.stars {
+  opacity: 0.72;
+}
+
+.moon circle {
+  stroke: var(--color-antique-gold);
+}
+
+.moon path {
+  fill: var(--color-antique-gold);
+  opacity: 0.24;
+}
+
+.ground {
+  fill: currentColor;
+  opacity: 0.24;
+}
+
+.groundLine {
+  stroke: currentColor;
+  opacity: 0.72;
+}
+
+.couple ellipse,
+.couple path {
+  fill: currentColor;
+}
+
+.couple path[fill="none"] {
+  stroke: var(--color-warm-champagne);
+  opacity: 0.34;
+}
+
+.thread {
+  stroke: var(--color-antique-gold);
+  opacity: 0.78;
+}

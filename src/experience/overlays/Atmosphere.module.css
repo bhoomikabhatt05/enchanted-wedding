@@ -1,0 +1,105 @@
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.contained {
+  position: absolute;
+  inset: 0;
+}
+
+.vignette,
+.haze,
+.glow,
+.bloom,
+.grain {
+  position: absolute;
+  inset: 0;
+}
+
+.vignette {
+  box-shadow:
+    inset 0 0 10rem 2.5rem rgba(7, 13, 22, 0.8),
+    inset 0 0 4rem 0.5rem rgba(7, 13, 22, 0.5);
+}
+
+.haze {
+  background:
+    radial-gradient(70% 50% at 50% 35%, rgba(232, 215, 181, 0.045), transparent 65%),
+    radial-gradient(50% 40% at 20% 60%, rgba(24, 56, 47, 0.06), transparent 50%),
+    radial-gradient(50% 40% at 80% 50%, rgba(100, 31, 43, 0.04), transparent 50%);
+}
+
+.glow {
+  background:
+    radial-gradient(ellipse 60% 30% at 50% 90%, rgba(201, 169, 107, 0.1), transparent 60%),
+    radial-gradient(ellipse 40% 20% at 50% 85%, rgba(232, 215, 181, 0.06), transparent 50%);
+}
+
+.bloom {
+  background:
+    radial-gradient(ellipse 35% 20% at 50% 50%, rgba(232, 215, 181, 0.025), transparent 60%);
+}
+
+.grain {
+  background-image: var(--grain-film);
+  background-size: 180px 180px;
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+}
+
+.stars {
+  position: absolute;
+  inset: 0;
+}
+
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--color-warm-champagne);
+}
+
+.dust {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--color-warm-champagne);
+  opacity: 0.14;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dust {
+    animation: drift linear infinite;
+  }
+
+  .star {
+    animation: twinkle ease-in-out infinite;
+  }
+}
+
+@keyframes drift {
+  0% {
+    transform: translateY(12px) translateX(0);
+    opacity: 0.06;
+  }
+  25% {
+    transform: translateY(2px) translateX(3px);
+  }
+  50% {
+    opacity: 0.26;
+  }
+  75% {
+    transform: translateY(-8px) translateX(-2px);
+  }
+  100% {
+    transform: translateY(-20px) translateX(0);
+    opacity: 0.06;
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.12; }
+  50% { opacity: 0.5; }
+}

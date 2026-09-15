@@ -1,0 +1,297 @@
+.page {
+  position: relative;
+  padding: 0 0 6rem;
+  overflow-x: hidden;
+  background: var(--color-midnight-navy);
+}
+
+.page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: var(--grain-film);
+  background-size: 180px 180px;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  z-index: 4;
+}
+
+.badge {
+  position: absolute;
+  top: 1.1rem;
+  left: var(--page-pad);
+  right: var(--page-pad);
+  z-index: 2;
+}
+
+.intro,
+.section,
+.transition {
+  position: relative;
+  z-index: 1;
+}
+
+.section,
+.transition {
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding-inline: var(--page-pad);
+}
+
+.intro {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--space-m);
+  padding: 5.5rem var(--page-pad) var(--space-2xl);
+  overflow: hidden;
+}
+
+.intro > :not(:first-child) {
+  position: relative;
+  z-index: 1;
+}
+
+.intro h1 em {
+  display: inline-block;
+  padding-inline: 0.12em;
+  color: var(--color-antique-gold);
+  font-style: normal;
+  vertical-align: baseline;
+}
+
+.lede {
+  max-width: 28rem;
+  color: color-mix(in srgb, var(--color-warm-champagne) 82%, var(--color-antique-gold));
+}
+
+.section {
+  padding-block: var(--space-xl);
+  display: grid;
+  gap: var(--space-m);
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-m);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.swatch {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.chip {
+  display: block;
+  height: 5.25rem;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-antique-gold) 32%, transparent);
+}
+
+.hex {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--color-warm-champagne) 70%, transparent);
+}
+
+.typeGrid,
+.typeStack,
+.typeAside {
+  display: grid;
+  gap: var(--space-m);
+}
+
+.typeStack .typeDisplay,
+.typeStack .typeHeading,
+.typeAside .typeNumeral {
+  color: var(--color-warm-champagne);
+}
+
+.typeAside .typeScript {
+  color: var(--color-antique-gold);
+}
+
+.stage {
+  position: relative;
+  min-height: 22rem;
+  display: grid;
+  align-items: end;
+  padding: var(--space-l) var(--space-m);
+  overflow: hidden;
+}
+
+.stageCopy {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: var(--space-s);
+  max-width: 22rem;
+}
+
+.layers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-s);
+}
+
+.layer {
+  position: relative;
+  min-height: 7.5rem;
+  display: grid;
+  align-items: end;
+  padding: var(--space-s);
+  overflow: hidden;
+}
+
+.layerFill {
+  position: absolute;
+  inset: 0;
+}
+
+.layer :global(.materialVignette) {
+  box-shadow: inset 0 0 2.2rem 0.45rem rgba(7, 13, 22, 0.78);
+}
+
+.layer :global(.typeLabel),
+.layer p {
+  position: relative;
+  z-index: 1;
+}
+
+.inkHeading {
+  color: var(--color-deep-charcoal);
+  margin-top: var(--space-s);
+}
+
+.inkBody {
+  color: var(--color-ink);
+  margin-block: var(--space-s) var(--space-m);
+}
+
+.goldRule {
+  margin: var(--space-m) 0 0;
+}
+
+.ornaments {
+  display: flex;
+  gap: var(--space-m);
+  align-items: center;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-m) var(--space-l);
+}
+
+.frames {
+  display: grid;
+  gap: var(--space-m);
+}
+
+.spaces {
+  display: grid;
+  gap: var(--space-s);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.spaceRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-m);
+}
+
+.spaceBar {
+  height: 0.5rem;
+  background: color-mix(in srgb, var(--color-antique-gold) 45%, transparent);
+}
+
+.spaceSample {
+  display: grid;
+  gap: var(--space-s);
+  max-width: 28rem;
+  padding: var(--space-l) 0;
+}
+
+.transition {
+  padding-top: var(--space-xl);
+  display: grid;
+  gap: var(--space-m);
+}
+
+.inkScene {
+  overflow: hidden;
+}
+
+.inkNight {
+  position: relative;
+  min-height: 12rem;
+  display: grid;
+  align-items: end;
+  padding: var(--space-l) var(--space-m);
+  background:
+    radial-gradient(80% 70% at 50% 100%, rgba(201, 169, 107, 0.08), transparent 55%),
+    var(--color-deep-charcoal);
+}
+
+.inkBlot {
+  margin-top: -1px;
+}
+
+.inkPaper {
+  margin-top: -2px;
+}
+
+.inkScript {
+  color: var(--color-deep-burgundy);
+}
+
+@media (min-width: 768px) {
+  .swatches {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .typeGrid {
+    grid-template-columns: 1.3fr 0.7fr;
+    gap: var(--space-xl);
+    align-items: start;
+  }
+
+  .frames {
+    grid-template-columns: 11.5rem 1fr;
+    align-items: stretch;
+  }
+
+  .layers {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .stage {
+    min-height: 28rem;
+    padding: var(--space-xl);
+  }
+
+  .intro h1 {
+    max-width: 14ch;
+  }
+}
+
+@media (min-width: 1100px) {
+  .swatches {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+
+  .intro {
+    padding-inline: 4.5rem;
+  }
+}

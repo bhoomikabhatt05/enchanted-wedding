@@ -1,0 +1,51 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap);
+  padding: 0 1.5rem;
+  border: 1px solid color-mix(in srgb, var(--color-antique-gold) 55%, transparent);
+  background: color-mix(in srgb, var(--color-antique-gold) 6%, transparent);
+  color: var(--color-warm-champagne);
+  font-family: var(--font-label);
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.root:hover,
+.root:focus-visible {
+  border-color: var(--color-antique-gold);
+  background: color-mix(in srgb, var(--color-antique-gold) 12%, transparent);
+  outline: none;
+}
+
+.root:active {
+  transform: translateY(1px);
+}
+
+.solid {
+  border-color: color-mix(in srgb, var(--color-deep-burgundy) 70%, var(--color-antique-gold));
+  background: color-mix(in srgb, var(--color-deep-burgundy) 72%, var(--color-deep-charcoal));
+}
+
+.solid:hover,
+.solid:focus-visible {
+  background: color-mix(in srgb, var(--color-deep-burgundy) 82%, var(--color-antique-gold));
+}
+
+.ink {
+  color: var(--color-ink);
+  border-color: color-mix(in srgb, var(--color-ink) 35%, transparent);
+  background: color-mix(in srgb, var(--color-ink) 4%, transparent);
+}
+
+.ink:hover,
+.ink:focus-visible {
+  border-color: var(--color-ink);
+  background: color-mix(in srgb, var(--color-ink) 8%, transparent);
+}

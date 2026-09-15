@@ -1,0 +1,13 @@
+.root {
+  margin: 0;
+  font-family: var(--font-label);
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-antique-gold) 82%, var(--color-warm-champagne));
+}
+
+.ink {
+  color: color-mix(in srgb, var(--color-deep-charcoal) 70%, var(--color-deep-burgundy));
+}

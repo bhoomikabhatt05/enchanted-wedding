@@ -1,0 +1,22 @@
+.field {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--color-warm-champagne);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .star {
+    animation: twinkle 5s ease-in-out infinite;
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: inherit; filter: brightness(0.75); }
+  50% { filter: brightness(1.6); }
+}

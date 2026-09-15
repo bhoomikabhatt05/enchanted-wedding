@@ -1,0 +1,38 @@
+.root {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--color-midnight-navy) 70%, var(--color-deep-charcoal)),
+    var(--color-deep-charcoal) 55%,
+    color-mix(in srgb, var(--color-forest-green) 35%, var(--color-deep-charcoal))
+  );
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-antique-gold) 26%, transparent),
+    inset 0 0 0 7px color-mix(in srgb, var(--color-midnight-navy) 72%, transparent);
+}
+
+.portrait {
+  aspect-ratio: 3 / 4;
+}
+
+.wide {
+  aspect-ratio: 16 / 10;
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  background-image: var(--grain-film);
+  background-size: 160px 160px;
+  opacity: 0.18;
+  mix-blend-mode: overlay;
+}
+
+.caption {
+  position: absolute;
+  right: 0.85rem;
+  bottom: 0.75rem;
+  margin: 0;
+}

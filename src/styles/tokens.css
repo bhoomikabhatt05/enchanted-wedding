@@ -1,0 +1,67 @@
+:root {
+  --color-midnight-navy: #0b1422;
+  --color-deep-charcoal: #12100f;
+  --color-antique-gold: #c9a96b;
+  --color-warm-champagne: #e8d7b5;
+  --color-aged-parchment: #d8c5a0;
+  --color-deep-burgundy: #641f2b;
+  --color-forest-green: #18382f;
+
+  --color-night: var(--color-midnight-navy);
+  --color-night-deep: #070d16;
+  --color-ink: #2a2218;
+  --color-gold-soft: color-mix(in srgb, var(--color-antique-gold) 55%, transparent);
+  --color-glow: color-mix(in srgb, var(--color-antique-gold) 22%, transparent);
+
+  --font-display: "Cormorant Garamond", "Iowan Old Style", Palatino, serif;
+  --font-body: "Newsreader", "Iowan Old Style", Palatino, serif;
+  --font-label: "Cormorant SC", "Cormorant Garamond", Palatino, serif;
+  --font-script: "Italianno", "Snell Roundhand", cursive;
+  --font-numeral: "Cormorant Garamond", Palatino, serif;
+
+  --text-display: clamp(2.75rem, 13vw, 7.25rem);
+  --text-heading: clamp(1.85rem, 6vw, 3.15rem);
+  --text-body: clamp(1.0625rem, 2.6vw, 1.1875rem);
+  --text-label: 0.6875rem;
+  --text-script: clamp(2.15rem, 8vw, 3.75rem);
+  --text-numeral: clamp(2.75rem, 10vw, 5.5rem);
+  --leading-display: 0.9;
+  --leading-heading: 1.15;
+  --leading-body: 1.65;
+  --tracking-label: 0.28em;
+  --tracking-display: 0.02em;
+
+  --space-xs: 0.5rem;
+  --space-s: 0.75rem;
+  --space-m: 1.25rem;
+  --space-l: 2rem;
+  --space-xl: 3.25rem;
+  --space-2xl: 5.5rem;
+  --page-pad: 1.25rem;
+  --content-max: 40rem;
+  --tap: 2.75rem;
+
+  --line-gold: 1px;
+  --radius-seal: 50%;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 180ms;
+  --duration-slow: 900ms;
+
+  --grain-film: url("/film-grain.svg");
+  --grain-paper: url("/paper-grain.svg");
+  --ink-edge: url("/ink-edge.svg");
+}
+
+@media (min-width: 768px) {
+  :root {
+    --page-pad: 3rem;
+    --content-max: 46rem;
+  }
+}
+
+@media (min-width: 1100px) {
+  :root {
+    --page-pad: 4.5rem;
+    --content-max: 52rem;
+  }
+}

@@ -1,0 +1,181 @@
+.stage {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2xl) var(--page-pad);
+  background: linear-gradient(180deg, #060b14 0%, #081020 62%, #060b12 100%);
+  text-align: center;
+}
+
+.sky {
+  position: absolute;
+  inset: 0;
+}
+
+.landscape {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 34%;
+}
+
+.ornament {
+  position: relative;
+  z-index: 2;
+  width: min(16rem, 70vw);
+  height: auto;
+  margin-bottom: var(--space-l);
+}
+
+.chapter {
+  color: color-mix(in srgb, var(--color-antique-gold) 78%, var(--color-warm-champagne));
+}
+
+.prelude {
+  max-width: 28rem;
+  margin: 0;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: color-mix(in srgb, var(--color-warm-champagne) 76%, transparent);
+}
+
+.names {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.7rem, 6vw, 2.4rem);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+  color: var(--color-warm-champagne);
+}
+
+.motif {
+  width: min(16rem, 68vw);
+  margin: var(--space-m) auto 0;
+  color: var(--color-warm-champagne);
+}
+
+.ornamentArt {
+  width: min(11rem, 52vw);
+  height: auto;
+  opacity: 0.9;
+  filter: drop-shadow(0 0 18px rgba(201, 169, 107, 0.25));
+}
+
+.twins {
+  width: min(12rem, 56vw);
+  height: auto;
+  margin-top: var(--space-s);
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-s);
+}
+
+.line {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 9vw, 4.2rem);
+  font-weight: 500;
+  line-height: 1.02;
+  color: rgba(232, 215, 181, 0.85);
+}
+
+.finalLine {
+  font-family: var(--font-script);
+  font-size: clamp(3rem, 13vw, 5.5rem);
+  line-height: 1;
+  color: var(--color-warm-champagne);
+  text-shadow: 0 0 44px rgba(232, 215, 181, 0.4);
+  margin-top: var(--space-s);
+}
+
+.divider {
+  margin: var(--space-l) auto var(--space-s);
+}
+
+.thanks {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-style: italic;
+  line-height: var(--leading-body);
+  color: rgba(232, 215, 181, 0.7);
+}
+
+.lanterns {
+  position: absolute;
+  inset: 0 0 18% 0;
+  pointer-events: none;
+}
+
+.lantern {
+  position: absolute;
+  width: 0.52rem;
+  height: 0.78rem;
+  border-radius: 0.28rem;
+  background: linear-gradient(180deg, #ffd98f, #ffb55a);
+  box-shadow: 0 0 12px rgba(255, 217, 143, 0.55);
+  opacity: 0.72;
+}
+
+.lantern:nth-child(1) { left: 12%; top: 18%; }
+.lantern:nth-child(2) { left: 24%; top: 28%; }
+.lantern:nth-child(3) { left: 42%; top: 14%; }
+.lantern:nth-child(4) { left: 56%; top: 22%; }
+.lantern:nth-child(5) { left: 68%; top: 32%; }
+.lantern:nth-child(6) { left: 78%; top: 18%; }
+.lantern:nth-child(7) { left: 88%; top: 26%; }
+
+.water {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 18%;
+  background:
+    linear-gradient(180deg, rgba(10, 18, 31, 0), rgba(10, 18, 31, 0.42)),
+    repeating-linear-gradient(90deg, rgba(232, 215, 181, 0.06) 0 1px, transparent 1px 18px);
+  opacity: 0.5;
+}
+
+.finale {
+  margin: var(--space-s) 0 0;
+  max-width: 24rem;
+  font-family: var(--font-label);
+  font-size: 0.8rem;
+  letter-spacing: 0.32em;
+  text-indent: 0.32em;
+  text-transform: uppercase;
+  line-height: 2;
+  color: color-mix(in srgb, var(--color-antique-gold) 85%, var(--color-warm-champagne));
+  text-wrap: balance;
+}
+
+.date {
+  margin: 0.4rem 0 0;
+  font-family: var(--font-numeral);
+  font-size: clamp(1.2rem, 4.5vw, 1.7rem);
+  letter-spacing: 0.28em;
+  text-indent: 0.28em;
+  color: color-mix(in srgb, var(--color-warm-champagne) 80%, transparent);
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(90% 70% at 50% 45%, transparent 58%, rgba(4, 6, 12, 0.6) 100%);
+}
