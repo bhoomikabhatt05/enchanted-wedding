@@ -21,6 +21,7 @@ export const hero = {
   chapter: "Chapter II · The invitation",
   eyebrow: "The invitation",
   title: "The Invitation",
+  coordinates: "30° 18′ N · 78° 02′ E",
 };
 
 export const countdown = {

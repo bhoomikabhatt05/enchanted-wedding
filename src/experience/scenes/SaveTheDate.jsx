@@ -127,6 +127,9 @@ export default function SaveTheDate() {
             frame="wide"
           />
           <span className={styles.portraitLine} aria-hidden="true" />
+          <span className={styles.spinRing} aria-hidden="true">
+            <span className={styles.spinSpark} />
+          </span>
         </div>
         <button type="button" className={styles.saveButton} onClick={handleSave} data-scroll-reveal>
           {saveTheDate.saveLabel}

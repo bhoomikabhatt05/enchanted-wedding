@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { gsap } from "../../lib/gsap";
 import { memories } from "../../lib/content";
 import { images } from "../../lib/images";
 import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
@@ -15,6 +16,8 @@ export default function Memories() {
   const trackRef = useRef(null);
   const leadSpaceRef = useRef(null);
   const trailSpaceRef = useRef(null);
+  const warpRef = useRef(null);
+  const prevIndexRef = useRef(0);
   const reducedMotion = usePrefersReducedMotion();
   const [activeIndex, setActiveIndex] = useState(0);
   const drag = useRef({ active: false, startX: 0, startScroll: 0, vel: 0, lastX: 0, lastT: 0, raf: 0 });
@@ -103,17 +106,113 @@ export default function Memories() {
     };
   }, [measure]);
 
-  const handleDistortion = (event) => {
-    if (reducedMotion) return;
-    const track = trackRef.current;
-    if (!track) return;
-    const card = event.currentTarget;
-    const bounds = card.getBoundingClientRect();
-    const x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 10;
-    const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 10;
-    card.style.setProperty("--tilt-x", `${y.toFixed(2)}deg`);
-    card.style.setProperty("--tilt-y", `${(-x).toFixed(2)}deg`);
+  // Liquid / ink distortion as the active memory changes — the departing
+// photograph warps and sinks away while the new one rises up through the
+// displacement, settling sharp. A breath of gold motes follows.
+useEffect(() => {
+  const previous = prevIndexRef.current;
+  prevIndexRef.current = activeIndex;
+  if (reducedMotion || activeIndex === previous) return;
+  const track = trackRef.current;
+  const warp = warpRef.current;
+  const cards = track ? [...track.querySelectorAll("[data-memory]")] : [];
+  const cardIn = cards[activeIndex];
+  const cardOut = cards[previous];
+  if (!warp || !cardIn || !cardOut || cardIn === cardOut) return;
+
+  const displace = warp.querySelector("feDisplacementMap");
+  const artIn = cardIn.querySelector(`.${styles.art}`);
+  const artOut = cardOut.querySelector(`.${styles.art}`);
+  if (!displace || !artIn || !artOut) return;
+
+  artIn.style.filter = "url(#memories-liquid)";
+  artOut.style.filter = "url(#memories-liquid) grayscale(0.85) brightness(0.6)";
+  artOut.style.transition = "none";
+  artIn.style.transition = "none";
+
+  // Gold motes released as the memory reforms.
+  const sparkles = [];
+  const host = artIn.querySelector(`.${styles.liquid}`);
+  if (host) {
+    for (let i = 0; i < 8; i += 1) {
+      const s = document.createElement("span");
+      s.className = styles.sparkle;
+      host.appendChild(s);
+      sparkles.push(s);
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 26 + Math.random() * 44;
+      gsap.fromTo(
+        s,
+        { x: 0, y: 0, opacity: 1, scale: 1 },
+        {
+          x: Math.cos(angle) * dist,
+          y: Math.sin(angle) * dist - 30,
+          opacity: 0,
+          scale: 0.25,
+          duration: 0.85 + Math.random() * 0.5,
+          delay: 0.18 + i * 0.02,
+          ease: "power2.out",
+        }
+      );
+    }
+  }
+
+  const rippleStrength = 62;
+  const tl = gsap.timeline({
+    onComplete: () => {
+      artIn.style.filter = "";
+      artOut.style.filter = "";
+      artOut.style.transition = "";
+      artIn.style.transition = "";
+      gsap.set([artIn, artOut], { clearProps: "transform,opacity" });
+      sparkles.forEach((s) => s.remove());
+    },
+  });
+
+  tl.fromTo(
+    displace,
+    { attr: { scale: 0 } },
+    { attr: { scale: rippleStrength }, duration: 0.55, ease: "power2.in" },
+    0
+  )
+    .to(displace, { attr: { scale: 0 }, duration: 0.6, ease: "power2.out" })
+    // Departing photo sinks and warps away.
+    .fromTo(
+      artOut,
+      { scale: 1, opacity: 1 },
+      { scale: 1.05, opacity: 0.35, duration: 0.7, ease: "power2.inOut" },
+      0
+    )
+    // Incoming photo swells up through the liquid, then settles sharp.
+    .fromTo(
+      artIn,
+      { scale: 1.1 },
+      { scale: 1.02, duration: 0.85, ease: "power2.out" },
+      0.15
+    );
+
+  return () => {
+    tl.kill();
+    artIn.style.filter = "";
+    artOut.style.filter = "";
+    artOut.style.transition = "";
+    artIn.style.transition = "";
+    gsap.set([artIn, artOut], { clearProps: "transform,opacity" });
+    sparkles.forEach((s) => s.remove());
   };
+}, [activeIndex, reducedMotion]);
+
+const handleDistortion = (event) => {
+  if (reducedMotion) return;
+  const track = trackRef.current;
+  if (!track) return;
+  const card = event.currentTarget;
+  const bounds = card.getBoundingClientRect();
+  const x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 10;
+  const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 10;
+  card.style.setProperty("--tilt-x", `${y.toFixed(2)}deg`);
+  card.style.setProperty("--tilt-y", `${(-x).toFixed(2)}deg`);
+};
 
   const clearDistortion = (event) => {
     event.currentTarget.style.setProperty("--tilt-x", "0deg");
@@ -214,6 +313,14 @@ export default function Memories() {
           <p className={styles.activeCaption}>{activeItem.caption}</p>
         </div>
       </div>
+
+      {/* Shared liquid-displacement filter for the memory transitions. */}
+      <svg className={styles.filterDefs} ref={warpRef} aria-hidden="true" focusable="false">
+        <filter id="memories-liquid" x="-25%" y="-25%" width="150%" height="150%" colorInterpolationFilters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency="0.012 0.016" numOctaves="2" seed="7" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </svg>
 
       <div className={styles.rail}>
         <div

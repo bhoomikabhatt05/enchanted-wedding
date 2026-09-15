@@ -129,6 +129,7 @@ export default function HeroInvitation({ heroRef }) {
             />
             <div className={styles.portraitGrade} />
             <div className={styles.portraitGrain} />
+            <span className={styles.lightSweep} aria-hidden="true" />
           </div>
         ) : null}
 
@@ -212,6 +213,10 @@ export default function HeroInvitation({ heroRef }) {
 
         <p data-scroll-reveal className={styles.date}>
           <span className={styles.dateValue}>{couple.dateLabel}</span>
+        </p>
+
+        <p data-scroll-reveal className={styles.coords}>
+          {hero.coordinates}
         </p>
 
         <div data-scroll-reveal className={styles.cue}>

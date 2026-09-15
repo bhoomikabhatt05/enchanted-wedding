@@ -1,0 +1,85 @@
+import { useRef } from "react";
+import { gsap, useGSAP } from "../../lib/gsap";
+import styles from "./MistFlow.module.css";
+
+/**
+ * MistFlow — a scroll-lit veil of cloud passing between chapters.
+ *
+ * Each boundary between two scenes gets a wide wavering bank of mist that
+ * drifts directionally across the viewport as the visitor scrolls: it rolls
+ * in over the finished scene, carries them across the transition, then
+ * clears to reveal the next environment — nothing fades; the world itself
+ * moves through the clouds.
+ */
+export default function MistFlow({ reducedMotion = false, storyRef = null }) {
+  const rootRef = useRef(null);
+
+  useGSAP(
+    () => {
+      if (reducedMotion) return;
+      const root = rootRef.current;
+      const story = storyRef?.current;
+      if (!root || !story) return;
+      const sections = [...story.querySelectorAll(":scope > section")];
+      if (!sections.length) return;
+      const banks = [...root.querySelectorAll("[data-mist-bank]")];
+      const created = [];
+
+      // Scene pairs the mist carries the visitor between (section indexes).
+      const boundaries = [
+        { from: 0, to: 1 }, // star chart → invitation
+        { from: 3, to: 4 }, // couple story → magical map
+        { from: 4, to: 5 }, // map → the big day (clouds clear over the venue)
+        { from: 5, to: 6 }, // big day → memories
+        { from: 6, to: 7 }, // memories → enchanted RSVP
+      ];
+
+      boundaries.forEach((boundary, i) => {
+        const trigger = sections[boundary.from];
+        const bank = banks[i];
+        if (!trigger || !bank) return;
+        const direction = i % 2 === 0 ? 1 : -1;
+        const tl = gsap.timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: {
+            trigger,
+            start: "bottom 62%",
+            end: "bottom 160%",
+            scrub: 0.5,
+          },
+        });
+        created.push(tl.scrollTrigger);
+        tl.set(bank, { xPercent: direction * 46, opacity: 0 })
+          .to(bank, { xPercent: direction * -48, opacity: 0.85, duration: 0.48 }, 0)
+          .to(bank, { xPercent: direction * -150, opacity: 0, duration: 0.42 }, 0.58);
+      });
+
+      return () => {
+        created.forEach((st) => st.kill());
+      };
+    },
+    { scope: rootRef, dependencies: [reducedMotion, storyRef] }
+  );
+
+  return (
+    <div
+      ref={rootRef}
+      className={styles.root}
+      aria-hidden="true"
+      data-reduced-motion={reducedMotion ? "true" : "false"}
+    >
+      {Array.from({ length: 5 }, (_, i) => (
+        <div
+          key={i}
+          className={styles.bank}
+          data-mist-bank={i}
+          data-mist-parity={i % 2 === 0 ? "out" : "in"}
+        >
+          <span className={`${styles.blob} ${styles.blobA}`} />
+          <span className={`${styles.blob} ${styles.blobB}`} />
+          <span className={`${styles.blob} ${styles.blobC}`} />
+        </div>
+      ))}
+    </div>
+  );
+}

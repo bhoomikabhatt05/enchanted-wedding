@@ -13,6 +13,7 @@ import styles from "./Closing.module.css";
 export default function Closing() {
   const rootRef = useRef(null);
   const skyRef = useRef(null);
+  const twinsRef = useRef(null);
   const reducedMotion = usePrefersReducedMotion();
   const ornamentSrc = imageSource(images.illustrations.ornament);
 
@@ -38,6 +39,57 @@ export default function Closing() {
           },
         }
       );
+    },
+    { scope: rootRef, dependencies: [reducedMotion] }
+  );
+
+  // Circle-closure: the silver thread draws itself between the two stars,
+  // twin flares bloom, and the pair's halos pulse to seal the spell.
+  useGSAP(
+    () => {
+      const twins = twinsRef.current;
+      if (!twins || reducedMotion) return;
+      const thread = twins.querySelector(`.${styles.thread}`);
+      const mid = twins.querySelector(`.${styles.mid}`);
+      const flares = [...twins.querySelectorAll(`.${styles.flare}`)];
+      const glows = [...twins.querySelectorAll(`.${styles.glow}`)];
+      if (!thread) return;
+
+      const len = thread.getTotalLength();
+
+      const tl = gsap.timeline({
+        defaults: { ease: "power2.out" },
+        scrollTrigger: {
+          trigger: twins,
+          start: "top 82%",
+          once: true,
+        },
+      });
+
+      tl.fromTo(
+        thread,
+        { attr: { strokeDasharray: len, strokeDashoffset: len, opacity: 1 } },
+        { attr: { strokeDashoffset: 0 }, duration: 0.95, ease: "power2.inOut" }
+      )
+        // The joining star ignites as the thread meets it.
+        .fromTo(
+          mid,
+          { attr: { r: 2, opacity: 0 }, transformOrigin: "50% 50%" },
+          { attr: { r: 3.4, opacity: 1 }, duration: 0.35 },
+          "<0.45"
+        )
+        .fromTo(
+          flares,
+          { attr: { r: 3, opacity: 0.85 }, transformOrigin: "50% 50%" },
+          { attr: { r: 11, opacity: 0 }, duration: 0.95, stagger: 0.14, ease: "power2.out" },
+          "<0.15"
+        )
+        .fromTo(
+          glows,
+          { attr: { r: 14 }, transformOrigin: "50% 50%" },
+          { attr: { r: 22 }, duration: 0.9, yoyo: true, repeat: 1, stagger: 0.16, ease: "power3.out" },
+          "<0.5"
+        );
     },
     { scope: rootRef, dependencies: [reducedMotion] }
   );
@@ -100,7 +152,7 @@ export default function Closing() {
           {closing.line3}
         </p>
         <Divider className={styles.divider} />
-        <svg className={styles.twins} viewBox="0 0 200 60" aria-hidden="true" data-scroll-reveal>
+        <svg className={styles.twins} viewBox="0 0 200 60" aria-hidden="true" data-scroll-reveal ref={twinsRef}>
           <defs>
             <radialGradient id="closingTwinGlow" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stopColor="#fff7dc" stopOpacity="1" />
@@ -108,9 +160,12 @@ export default function Closing() {
               <stop offset="100%" stopColor="#c9a96b" stopOpacity="0" />
             </radialGradient>
           </defs>
-          <circle cx="72" cy="30" r="16" fill="url(#closingTwinGlow)" />
-          <circle cx="128" cy="30" r="16" fill="url(#closingTwinGlow)" />
-          <line x1="72" y1="30" x2="128" y2="30" stroke="#c9a96b" strokeWidth="1" opacity="0.8" />
+          <circle className={styles.glow} cx="72" cy="30" r="14" fill="url(#closingTwinGlow)" />
+          <circle className={styles.glow} cx="128" cy="30" r="14" fill="url(#closingTwinGlow)" />
+          <line className={styles.thread} x1="72" y1="30" x2="128" y2="30" stroke="#c9a96b" strokeWidth="1.2" opacity="0.85" strokeLinecap="round" />
+          <circle className={styles.flare} cx="72" cy="30" r="3" fill="#e8d7b5" opacity="0" />
+          <circle className={styles.flare} cx="128" cy="30" r="3" fill="#e8d7b5" opacity="0" />
+          <circle className={styles.mid} cx="100" cy="30" r="2" fill="#fff7dc" opacity="0" />
           <circle cx="72" cy="30" r="3" fill="#fff7dc" stroke="#c9a96b" strokeWidth="0.8" />
           <circle cx="128" cy="30" r="3" fill="#fff7dc" stroke="#c9a96b" strokeWidth="0.8" />
         </svg>

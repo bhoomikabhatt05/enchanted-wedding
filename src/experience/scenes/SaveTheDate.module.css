@@ -124,6 +124,41 @@
   pointer-events: none;
 }
 
+/* A thread of gold keeps orbiting the framed portrait — the circle that
+   keeps coming back to them. */
+.spinRing {
+  position: absolute;
+  inset: -0.95rem;
+  border: 1px dashed rgba(201, 169, 107, 0.38);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: spinSlow 26s linear infinite;
+}
+
+.spinSpark {
+  position: absolute;
+  top: -0.28rem;
+  left: 50%;
+  width: 0.42rem;
+  height: 0.42rem;
+  margin-left: -0.21rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff7dc 0%, #e8d7b5 55%, rgba(201, 169, 107, 0) 80%);
+  box-shadow: 0 0 12px 2px rgba(232, 215, 181, 0.7);
+  pointer-events: none;
+}
+
+@keyframes spinSlow {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinRing,
+  .spinSpark {
+    animation: none;
+  }
+}
+
 .saveButton {
   min-height: 2.9rem;
   padding: 0 1.6rem;

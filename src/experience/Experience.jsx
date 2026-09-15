@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { gsap, useGSAP } from "../lib/gsap";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import Atmosphere from "./overlays/Atmosphere";
+import MistFlow from "./overlays/MistFlow";
 import StarChartOpening from "./scenes/OpeningLetter";
 import HeroInvitation from "./scenes/HeroInvitation";
 import Countdown from "./scenes/Countdown";
@@ -16,6 +17,7 @@ import styles from "./Experience.module.css";
 
 export default function Experience() {
   const rootRef = useRef(null);
+  const mainRef = useRef(null);
   const heroRef = useRef(null);
   const countdownRef = useRef(null);
   const reducedMotion = usePrefersReducedMotion();
@@ -48,7 +50,7 @@ export default function Experience() {
   return (
     <div ref={rootRef} className={styles.root}>
       <Atmosphere reducedMotion={reducedMotion} />
-      <main className={styles.story}>
+      <main ref={mainRef} className={styles.story}>
         <StarChartOpening />
         <HeroInvitation heroRef={heroRef} />
         <Countdown ref={countdownRef} />
@@ -60,6 +62,7 @@ export default function Experience() {
         <SaveTheDate />
         <Closing />
       </main>
+      <MistFlow reducedMotion={reducedMotion} storyRef={mainRef} />
     </div>
   );
 }

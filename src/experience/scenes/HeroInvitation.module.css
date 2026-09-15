@@ -84,6 +84,11 @@
   position: absolute;
   inset: -6% 0;
   will-change: transform;
+  /* Feather the photo into the night so it never reads as a flat rectangle. */
+  mask-image:
+    radial-gradient(118% 96% at 50% 30%, #000 48%, rgba(0, 0, 0, 0.72) 72%, transparent 94%);
+  -webkit-mask-image:
+    radial-gradient(118% 96% at 50% 30%, #000 48%, rgba(0, 0, 0, 0.72) 72%, transparent 94%);
 }
 
 .portrait {
@@ -94,6 +99,36 @@
   object-position: 50% 22%;
   will-change: transform;
   filter: sepia(0.28) saturate(0.9) contrast(1.05) brightness(0.82);
+}
+
+/* A slow champagne light sweeps across the couple as they are revealed. */
+.lightSweep {
+  position: absolute;
+  top: -24%;
+  bottom: -24%;
+  left: 0;
+  width: 46%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    transparent 40%,
+    rgba(255, 244, 216, 0.2) 50%,
+    transparent 60%,
+    transparent 100%
+  );
+  filter: blur(2px);
+  will-change: transform;
+  transform: translateX(-160%) skewX(-8deg);
+  animation: lightSweep 3.4s 1.1s cubic-bezier(0.55, 0, 0.25, 1) both;
+}
+
+@keyframes lightSweep {
+  0% { transform: translateX(-160%) skewX(-8deg); opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { transform: translateX(360%) skewX(-8deg); opacity: 0; }
 }
 
 .portraitGrade {
@@ -136,6 +171,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .mote {
+    display: none;
+  }
+
+  .lightSweep {
     display: none;
   }
 }
@@ -285,6 +324,30 @@
   letter-spacing: 0.14em;
   color: var(--color-warm-champagne);
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+.coords {
+  margin: var(--space-xl) 0 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-label);
+  font-size: 0.62rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-warm-champagne) 55%, transparent);
+}
+
+.coords::before,
+.coords::after {
+  content: "";
+  width: 1.4rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201, 169, 107, 0.4));
+}
+
+.coords::after {
+  background: linear-gradient(90deg, rgba(201, 169, 107, 0.4), transparent);
 }
 
 .cue {

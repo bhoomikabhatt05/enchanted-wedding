@@ -153,7 +153,7 @@
 
 .lit {
   filter: grayscale(0.05) brightness(1.05);
-  transform: perspective(900px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translateY(-0.5rem);
+  transform: perspective(900px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translateY(-0.5rem) scale(1.05);
 }
 
 .art {
@@ -195,6 +195,26 @@
   background:
     radial-gradient(60% 46% at 30% 24%, rgba(255, 233, 200, 0.55), transparent 70%),
     radial-gradient(46% 36% at 72% 68%, rgba(160, 190, 225, 0.5), transparent 70%);
+}
+
+.filterDefs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.sparkle {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  z-index: 9;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: var(--color-warm-champagne);
+  box-shadow: 0 0 6px 1px rgba(244, 231, 196, 0.85);
+  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
