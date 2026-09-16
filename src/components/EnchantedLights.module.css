@@ -1,0 +1,16 @@
+/* Global enchanted lights — one fixed canvas above story backgrounds,
+   below the mist banks. Never interactive, never layout. */
+.lights {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lights {
+    opacity: 0.8;
+  }
+}

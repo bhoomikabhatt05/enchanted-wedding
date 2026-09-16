@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { gsap, useGSAP } from "../lib/gsap";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import Atmosphere from "./overlays/Atmosphere";
+import EnchantedLights from "../components/EnchantedLights";
 import MistFlow from "./overlays/MistFlow";
 import StarChartOpening from "./scenes/OpeningLetter";
 import HeroInvitation from "./scenes/HeroInvitation";
@@ -63,6 +64,7 @@ export default function Experience() {
         <Closing />
       </main>
       <MistFlow reducedMotion={reducedMotion} storyRef={mainRef} />
+      <EnchantedLights storyRef={mainRef} />
     </div>
   );
 }
