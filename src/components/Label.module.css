@@ -11,3 +11,10 @@
 .ink {
   color: color-mix(in srgb, var(--color-deep-charcoal) 70%, var(--color-deep-burgundy));
 }
+
+.sigil {
+  margin-right: 0.55em;
+  font-size: 0.9em;
+  color: var(--color-antique-gold);
+  opacity: 0.75;
+}
