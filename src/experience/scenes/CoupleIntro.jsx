@@ -7,6 +7,7 @@ import { useScrollReveal } from "../../hooks/useScrollReveal";
 import StoryImage from "../../components/StoryImage";
 import CoupleMotif from "../../components/CoupleMotif";
 import Label from "../../components/Label";
+import MoonPhase from "../../components/MoonPhase";
 import Divider from "../../components/Divider";
 import styles from "./CoupleIntro.module.css";
 
@@ -89,6 +90,7 @@ export default function CoupleIntro() {
 
       <div className={styles.content}>
         <Label className={styles.chapter} data-scroll-reveal>
+          <MoonPhase phase="crescent" />
           {duo.chapter}
         </Label>
         <h2 className={styles.title} data-scroll-reveal>

@@ -124,7 +124,7 @@ export const journey = {
 
 export const event = {
   chapter: "Chapter VI · The big day",
-  title: "The Big Day",
+  title: "The Day Has Finally Arrived",
   invitation: "You’re invited to celebrate with us.",
   anchors: [
     { id: "candle", label: "Candle", hint: "Ceremony" },
@@ -267,8 +267,8 @@ export const rsvp = {
   errorMessage: "The letter could not be sent just now. Please keep it and try again.",
   storageKey: "enchanted-wedding-rsvp-v1",
   options: [
-    { id: "attending", label: "I'll be there" },
-    { id: "regrets", label: "Send my regards" },
+    { id: "attending", label: "✦ I shall be there" },
+    { id: "regrets", label: "My thoughts will be with you" },
     { id: "unsure", label: "I'm not sure yet" },
   ],
   confirmations: {
@@ -301,8 +301,8 @@ export const closing = {
   chapter: "Chapter X · Forever",
   prelude: "Every great love story deserves a magical beginning.",
   names: "Aarav & Meera",
-  line1: "One story.",
-  line2: "Two souls.",
+  line1: "Some stories are written.",
+  line2: "Ours was drawn in the stars.",
   line3: "Forever.",
   finale: "And so, the next chapter begins.",
   date: "12 · 12 · 2026",

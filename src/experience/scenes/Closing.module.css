@@ -16,6 +16,41 @@
   inset: 0;
 }
 
+/* Candlelight pooled low in the scene. */
+.candle {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: -16%;
+  height: 48%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.candleGlow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    closest-side,
+    rgba(242, 201, 121, 0.15),
+    rgba(242, 201, 121, 0.05) 55%,
+    transparent 72%
+  );
+  animation: candle-breathe 7s ease-in-out infinite;
+}
+
+@keyframes candle-breathe {
+  0%,
+  100% {
+    opacity: 0.62;
+    scale: 1;
+  }
+  50% {
+    opacity: 1;
+    scale: 1.045;
+  }
+}
+
 .landscape {
   position: absolute;
   left: 0;
@@ -170,6 +205,15 @@
   letter-spacing: 0.28em;
   text-indent: 0.28em;
   color: color-mix(in srgb, var(--color-warm-champagne) 80%, transparent);
+}
+
+/* The couple's sign-off seal — quiet, last, gold on night. */
+.seal {
+  width: clamp(3rem, 12vw, 3.75rem);
+  height: auto;
+  margin-top: var(--space-l);
+  opacity: 0.92;
+  filter: drop-shadow(0 0 12px rgba(201, 169, 107, 0.25));
 }
 
 .vignette {

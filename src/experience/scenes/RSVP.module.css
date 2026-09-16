@@ -105,11 +105,45 @@
 /* ---- options ----------------------------------------------------------- */
 
 .options {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
   width: min(21rem, 100%);
   transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+}
+
+/* The quill flies once per choice, then vanishes. */
+.quill {
+  position: absolute;
+  top: 50%;
+  left: -12%;
+  width: 44px;
+  height: auto;
+  opacity: 0;
+  pointer-events: none;
+  animation: quill-sweep 1.25s var(--ease-out) forwards;
+}
+
+@keyframes quill-sweep {
+  0% {
+    left: -12%;
+    opacity: 0;
+    rotate: -14deg;
+  }
+  20% {
+    opacity: 1;
+  }
+  75% {
+    left: 88%;
+    opacity: 1;
+    rotate: 8deg;
+  }
+  100% {
+    left: 104%;
+    opacity: 0;
+    rotate: 10deg;
+  }
 }
 
 .optionsHidden {
@@ -129,7 +163,17 @@
   padding: 0.7rem 1.1rem;
   border: 0;
   border-bottom: 1px solid rgba(42, 34, 24, 0.28);
-  background: transparent;
+  background-color: transparent;
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    rgba(125, 29, 39, 0.85) 22%,
+    rgba(125, 29, 39, 0.85) 78%,
+    transparent
+  );
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  background-size: 0% 1px;
   font-family: var(--font-label);
   font-size: 0.95rem;
   letter-spacing: 0.22em;
@@ -137,7 +181,8 @@
   color: var(--color-ink);
   cursor: pointer;
   transition:
-    background 0.25s var(--ease-out),
+    background-color 0.25s var(--ease-out),
+    background-size 0.9s var(--ease-out),
     color 0.25s var(--ease-out),
     transform 0.25s var(--ease-out),
     border-color 0.25s var(--ease-out);
@@ -145,7 +190,7 @@
 
 .option:hover:not(:disabled),
 .option:focus-visible {
-  background: linear-gradient(180deg, rgba(141, 38, 48, 0.06), rgba(141, 38, 48, 0.02));
+  background-color: rgba(141, 38, 48, 0.05);
   border-bottom-color: #8d2630;
   outline: none;
   transform: translateY(-1px);
@@ -154,8 +199,22 @@
 .optionActive {
   border-bottom-color: var(--color-antique-gold);
   color: #7c1d27;
-  background:
+  background-image:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(201, 169, 107, 0.9) 22%,
+      rgba(201, 169, 107, 0.9) 78%,
+      transparent
+    ),
     radial-gradient(120% 160% at 50% 0%, rgba(201, 169, 107, 0.16) 0%, rgba(201, 169, 107, 0.04) 62%, transparent 100%);
+  background-repeat: no-repeat;
+  background-position:
+    bottom center,
+    0 0;
+  background-size:
+    100% 1px,
+    auto;
   box-shadow:
     0 0 0 1px rgba(201, 169, 107, 0.22),
     0 6px 22px -12px rgba(201, 169, 107, 0.55),

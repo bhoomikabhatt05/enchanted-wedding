@@ -1,0 +1,85 @@
+.root {
+  position: relative;
+}
+
+.word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.letter {
+  display: inline-block;
+  will-change: opacity, filter;
+}
+
+.rule {
+  display: block;
+  width: min(10rem, 62%);
+  height: 2px;
+  margin-top: 0.5em;
+  background: linear-gradient(90deg, var(--color-antique-gold), transparent);
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .letter {
+    opacity: 0;
+    filter: blur(6px);
+  }
+
+  .settled .letter {
+    animation: ink-settle 1.1s var(--ease-out) forwards;
+    animation-delay: calc(var(--i) * 45ms);
+  }
+
+  .light.settled .letter {
+    animation-name: ink-settle-light;
+  }
+
+  .rule {
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  .settled .rule {
+    transform: scaleX(1);
+    transition: transform 1.1s var(--ease-out) var(--d, 0.8s);
+  }
+}
+
+@keyframes ink-settle {
+  0% {
+    opacity: 0;
+    filter: blur(6px);
+    translate: 0 0.35em;
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    translate: 0 0;
+  }
+}
+
+@keyframes ink-settle-light {
+  0% {
+    opacity: 0;
+    filter: blur(6px);
+    translate: 0 0.35em;
+    text-shadow: 0 0 24px rgba(255, 233, 173, 0.95);
+  }
+  55% {
+    opacity: 1;
+    filter: blur(0);
+    text-shadow: 0 0 14px rgba(255, 233, 173, 0.5);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    translate: 0 0;
+    text-shadow: 0 0 0 transparent;
+  }
+}

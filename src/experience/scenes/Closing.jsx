@@ -7,6 +7,7 @@ import { useScrollReveal } from "../../hooks/useScrollReveal";
 import StarField from "../../components/StarField";
 import CoupleMotif from "../../components/CoupleMotif";
 import Divider from "../../components/Divider";
+import InkTitle from "../../components/InkTitle";
 import Label from "../../components/Label";
 import styles from "./Closing.module.css";
 
@@ -108,6 +109,10 @@ export default function Closing() {
 
       <div className={styles.water} aria-hidden="true" />
 
+      <div className={styles.candle} aria-hidden="true">
+        <div className={styles.candleGlow} />
+      </div>
+
       <div className={styles.landscape} aria-hidden="true">
         <svg viewBox="0 0 1440 300" preserveAspectRatio="xMidYMax slice">
           <path d="M0 300 L0 210 L 260 110 L 520 230 L 800 120 L 1080 250 L 1440 150 L 1440 300 Z" fill="#0a121f" />
@@ -148,9 +153,13 @@ export default function Closing() {
         <p className={styles.line} data-scroll-reveal>
           {closing.line2}
         </p>
-        <p className={styles.finalLine} data-scroll-reveal>
-          {closing.line3}
-        </p>
+        <InkTitle
+          as="p"
+          text={closing.line3}
+          variant="light"
+          className={styles.finalLine}
+          data-scroll-reveal
+        />
         <Divider className={styles.divider} />
         <svg className={styles.twins} viewBox="0 0 200 60" aria-hidden="true" data-scroll-reveal ref={twinsRef}>
           <defs>
@@ -175,6 +184,14 @@ export default function Closing() {
         <p className={styles.date} data-scroll-reveal>
           {closing.date}
         </p>
+        <img
+          src="/assets/branding/couple-monogram.svg"
+          alt="Aarav and Meera monogram"
+          className={styles.seal}
+          loading="lazy"
+          decoding="async"
+          data-scroll-reveal
+        />
       </div>
 
       <div className={styles.vignette} aria-hidden="true" />

@@ -96,6 +96,12 @@ export default function MistFlow({ reducedMotion = false, storyRef = null }) {
             <span className={`${styles.blob} ${styles.blobB}`} />
             <span className={`${styles.blob} ${styles.blobC}`} />
             {i === 2 ? <span className={styles.streak} data-wand-streak /> : null}
+            {i === 2 || i === 4 ? (
+              <>
+                <span className={`${styles.mote} ${styles.moteA}`} aria-hidden="true">A</span>
+                <span className={`${styles.mote} ${styles.moteB}`} aria-hidden="true">M</span>
+              </>
+            ) : null}
           </div>
         ))}
     </div>

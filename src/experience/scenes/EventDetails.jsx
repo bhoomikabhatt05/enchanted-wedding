@@ -4,6 +4,8 @@ import { images, imageSource } from "../../lib/images";
 import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
 import { gsap, useGSAP } from "../../lib/gsap";
 import Label from "../../components/Label";
+import MoonPhase from "../../components/MoonPhase";
+import InkTitle from "../../components/InkTitle";
 import Divider from "../../components/Divider";
 import styles from "./EventDetails.module.css";
 
@@ -126,21 +128,40 @@ export default function EventDetails() {
         })}
 
         <div className={styles.head} aria-hidden={reducedMotion ? undefined : "true"}>
-          <Label className={styles.chapter}>{event.chapter}</Label>
-          <h2 className={styles.title}>{event.title}</h2>
+          <Label className={styles.chapter}>
+            <MoonPhase phase="gibbous" />
+            {event.chapter}
+          </Label>
+          <InkTitle as="h2" text={event.title} variant="light" className={styles.title} />
           <p className={styles.invitation}>{event.invitation}</p>
         </div>
 
         <div className={styles.copies}>
-          {BEATS.map((beat) => (
-            <div key={beat.id} className={styles.beatCopy} data-beat-copy>
-              <p className={styles.eyebrow}>{beat.eyebrow}</p>
-              <h3 className={styles.beatTitle}>{beat.title}</h3>
-              <p className={styles.meta}>{beat.meta}</p>
+          {BEATS.map((item, i) => (
+            <div
+              key={item.id}
+              className={`${styles.beatCopy} ${i === beat ? styles.beatCopyActive : ""}`.trim()}
+              data-beat-copy
+            >
+              <p className={styles.eyebrow}>
+                <span aria-hidden="true">✦&ensp;</span>
+                {item.eyebrow}
+                <span aria-hidden="true">&ensp;✦</span>
+              </p>
+              <h3 className={styles.beatTitle}>{item.title}</h3>
+              <p className={styles.meta}>{item.meta}</p>
               <Divider className={styles.rule} />
-              <p className={styles.detail}>{beat.detail}</p>
+              <p className={styles.detail}>{item.detail}</p>
             </div>
           ))}
+        </div>
+
+        <div
+          className={styles.candle}
+          aria-hidden="true"
+          style={{ opacity: 0.35 + beat * 0.15 }}
+        >
+          <div className={styles.candleGlow} />
         </div>
 
         <div className={styles.pips} aria-hidden="true">

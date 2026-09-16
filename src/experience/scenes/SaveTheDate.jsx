@@ -7,6 +7,7 @@ import { useScrollReveal, useParallax } from "../../hooks/useScrollReveal";
 import StarField from "../../components/StarField";
 import StoryImage from "../../components/StoryImage";
 import Label from "../../components/Label";
+import InkTitle from "../../components/InkTitle";
 import styles from "./SaveTheDate.module.css";
 
 function buildIcsContent() {
@@ -116,9 +117,13 @@ export default function SaveTheDate() {
         <div className={styles.date} data-scroll-reveal>
           {saveTheDate.date}
         </div>
-        <div className={styles.names} data-scroll-reveal>
-          {saveTheDate.names}
-        </div>
+        <InkTitle
+          as="div"
+          text={saveTheDate.names}
+          variant="light"
+          className={styles.names}
+          data-scroll-reveal
+        />
         <div className={styles.portrait} data-scroll-reveal>
           <StoryImage
             image={images.couple.lights}

@@ -5,6 +5,7 @@ import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
 import { gsap, ScrollTrigger, useGSAP } from "../../lib/gsap";
 import StoryImage from "../../components/StoryImage";
 import Label from "../../components/Label";
+import MoonPhase from "../../components/MoonPhase";
 import ScrollCue from "../../components/ScrollCue";
 import styles from "./JourneyMap.module.css";
 
@@ -222,6 +223,22 @@ export default function JourneyMap() {
         }
         if (progress) progress.style.transform = `scaleX(${drawn})`;
 
+        // Enchanted footprints trail the traveler, fading behind them.
+        // Attribute transforms only — never CSS transforms on SVG.
+        const headLen = drawn * total;
+        q("[data-footstep]").forEach((step, k, steps) => {
+          const d = headLen - (k + 1) * 46;
+          if (d < 10) {
+            step.style.opacity = "0";
+            return;
+          }
+          const pt = route.getPointAtLength(d);
+          const ahead = route.getPointAtLength(Math.min(d + 6, total));
+          const ang = (Math.atan2(ahead.y - pt.y, ahead.x - pt.x) * 180) / Math.PI;
+          step.setAttribute("transform", `translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)}) rotate(${ang.toFixed(1)})`);
+          step.style.opacity = `${(0.5 * (1 - k / steps.length)).toFixed(3)}`;
+        });
+
         // Shimmer tail: the last stretch of thread glows brighter, so the
         // story feels physically present at its leading edge.
         if (shimmer) {
@@ -417,7 +434,7 @@ export default function JourneyMap() {
     return (
       <section ref={rootRef} className={styles.static} aria-label="Our journey">
         <div className={styles.staticInner}>
-          <Label className={styles.chapter} sigil>{journey.chapter}</Label>
+          <Label className={styles.chapter} sigil><MoonPhase phase="half" />{journey.chapter}</Label>
           <h2 className={styles.lede}>{journey.lede}</h2>
           <div className={styles.staticMap}>
             <MapArt routeRef={routeRef} mapSrc={mapSrc} litAll layout={WIDE} notesOpacity={0.85} />
@@ -463,7 +480,7 @@ export default function JourneyMap() {
 
         {/* Opening words — the map is already visible behind them. */}
         <header ref={introRef} className={styles.intro} data-intro>
-          <Label className={styles.chapter} sigil>{journey.chapter}</Label>
+          <Label className={styles.chapter} sigil><MoonPhase phase="half" />{journey.chapter}</Label>
           <h2 className={styles.lede}>{journey.lede}</h2>
           <div className={styles.cue}>
             <ScrollCue label="Follow the golden thread" />
@@ -472,7 +489,7 @@ export default function JourneyMap() {
 
         {/* Milestone words — one composition, cross-fading content. */}
         <div ref={wordsRef} className={styles.words} data-words>
-          <Label className={styles.chapter} sigil>{journey.chapter}</Label>
+          <Label className={styles.chapter} sigil><MoonPhase phase="half" />{journey.chapter}</Label>
           {milestones.map((m, i) => (
             <div
               key={m.year}
@@ -648,6 +665,14 @@ function MapArt({ routeRef, mapSrc, litAll, layout, notesOpacity }) {
         opacity="0"
         filter="url(#journeyBloom)"
       />
+
+      {/* Footsteps hand-drawn behind the traveler, fading with distance. */}
+      {Array.from({ length: 7 }, (_, k) => (
+        <g key={k} data-footstep opacity="0">
+          <ellipse cx={k % 2 ? 2.6 : -2.6} cy="-3.4" rx="1.9" ry="3.2" fill="#d8c5a0" />
+          <ellipse cx={k % 2 ? -2.6 : 2.6} cy="3.4" rx="1.9" ry="3.2" fill="#d8c5a0" />
+        </g>
+      ))}
 
       <circle data-traveler r="6" fill="#fff7dc" stroke="#c9a96b" strokeWidth="1.4" opacity="0" filter="url(#journeyBloom)" />
 

@@ -5,9 +5,10 @@ import { gsap, useGSAP } from "../../lib/gsap";
 import { useScrollReveal } from "../../hooks/useScrollReveal";
 import Label from "../../components/Label";
 import Parchment from "../../components/Parchment";
+import InkTitle from "../../components/InkTitle";
 import styles from "./RSVP.module.css";
 
-function InkStamp({ visible }) {
+function InkStamp({ visible, sealed }) {
   const svgRef = useRef(null);
   const reducedMotion = usePrefersReducedMotion();
 
@@ -28,8 +29,16 @@ function InkStamp({ visible }) {
         { autoAlpha: 0, scale: 2.6, rotate: -18 },
         { autoAlpha: 1, scale: 1, rotate: -6, duration: 0.85, ease: "power3.out", delay: 0.1 }
       );
+      // Sealing flash: a breath of light across the wax, then the glow rests.
+      if (sealed) {
+        gsap.fromTo(
+          svg,
+          { filter: "brightness(1)" },
+          { filter: "brightness(1.7)", duration: 0.45, yoyo: true, repeat: 1, delay: 0.9, clearProps: "filter" }
+        );
+      }
     },
-    { scope: svgRef, dependencies: [reducedMotion, visible] }
+    { scope: svgRef, dependencies: [reducedMotion, visible, sealed] }
   );
 
   return (
@@ -45,6 +54,20 @@ function InkStamp({ visible }) {
       <path d="M 60 14 l 2.4 4.6 5.1 0.7 -3.7 3.6 0.9 5 -4.7 -2.5 -4.7 2.5 0.9 -5 -3.7 -3.6 5.1 -0.7 Z" fill="#e8d7b5" />
       <path d="M 60 98 l 2.4 4.6 5.1 0.7 -3.7 3.6 0.9 5 -4.7 -2.5 -4.7 2.5 0.9 -5 -3.7 -3.6 5.1 -0.7 Z" fill="#e8d7b5" />
       <text x="60" y="72" textAnchor="middle" className={styles.stampLetters}>A · M</text>
+    </svg>
+  );
+}
+
+/**
+ * A small antique quill that sweeps once across the chosen reply, then
+ * vanishes. Remounts (and re-flies) every time the choice changes.
+ */
+function QuillFlight() {
+  return (
+    <svg className={styles.quill} viewBox="0 0 60 60" aria-hidden="true">
+      <path d="M8 52 C 22 38, 34 24, 50 8" stroke="#4a3320" strokeWidth="2.4" fill="none" strokeLinecap="round" />
+      <path d="M50 8 C 40 10, 30 18, 26 30 C 34 26, 44 18, 50 8 Z" fill="#d8c5a0" stroke="#8a6a3f" strokeWidth="1" />
+      <path d="M50 8 C 46 8, 42 10, 38 14" stroke="#8a6a3f" strokeWidth="0.8" fill="none" />
     </svg>
   );
 }
@@ -174,9 +197,14 @@ export default function RSVP() {
           <Label className={styles.eyebrow} data-scroll-reveal>
             {rsvp.chapter}
           </Label>
-          <h2 className={styles.title} data-scroll-reveal>
-            {rsvp.title}
-          </h2>
+          <InkTitle
+            as="h2"
+            text={rsvp.title}
+            variant="ink"
+            underline
+            className={styles.title}
+            data-scroll-reveal
+          />
           <p className={styles.sub} data-scroll-reveal>
             {rsvp.sub}
           </p>
@@ -199,6 +227,7 @@ export default function RSVP() {
             aria-hidden={settled ? "true" : undefined}
             data-scroll-reveal
           >
+            {choice ? <QuillFlight key={choice} /> : null}
             {rsvp.options.map((option) => (
               <button
                 key={option.id}
@@ -231,7 +260,7 @@ export default function RSVP() {
           ) : null}
 
           <div className={`${styles.result} ${settled ? styles.resultVisible : ""}`.trim()} aria-live="polite">
-            <InkStamp visible={settled} />
+            <InkStamp visible={settled} sealed={settled} />
             <p className={styles.confirmation}>
               {choice ? rsvp.confirmations[choice] : ""}
             </p>

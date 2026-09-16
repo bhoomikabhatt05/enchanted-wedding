@@ -69,6 +69,39 @@
   will-change: transform, opacity;
 }
 
+/* Magical residue — two letterforms adrift in the great page-turns only. */
+.mote {
+  position: absolute;
+  font-family: var(--font-script);
+  font-size: 1.6rem;
+  color: rgba(232, 215, 181, 0.16);
+  animation: mote-drift 17s ease-in-out infinite alternate;
+}
+
+.moteA {
+  top: 30%;
+  left: 30%;
+}
+
+.moteB {
+  top: 58%;
+  left: 64%;
+  font-size: 1.3rem;
+  animation-delay: -8s;
+  animation-duration: 21s;
+}
+
+@keyframes mote-drift {
+  from {
+    translate: 0 0;
+    opacity: 0.6;
+  }
+  to {
+    translate: 4vw -3vh;
+    opacity: 1;
+  }
+}
+
 /* Counter-roll: inner blobs drift inside the bank as it crosses, so the
    cloud has motion at two depths. */
 .bank[data-mist-parity="out"] .blobA { animation: rollForth 26s ease-in-out infinite alternate; }

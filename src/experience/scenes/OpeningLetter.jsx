@@ -4,6 +4,7 @@ import { opening } from "../../lib/content";
 import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
 import { gsap, useGSAP } from "../../lib/gsap";
 import Label from "../../components/Label";
+import MoonPhase from "../../components/MoonPhase";
 import ScrollCue from "../../components/ScrollCue";
 import styles from "./OpeningLetter.module.css";
 
@@ -13,7 +14,13 @@ const GLINTS = Array.from({ length: 26 }, (_, i) => {
   return { x, y, r: i % 5 === 0 ? 2 : 1.2, delay: `${(i % 9) * 0.4}s` };
 });
 
-// The two fated stars on the chart.
+// Tiny stars for the invitation prelude.
+const PRE_STARS = Array.from({ length: 12 }, (_, i) => ({
+  top: `${8 + ((i * 37 + 13) % 60)}%`,
+  left: `${4 + ((i * 53 + 29) % 92)}%`,
+  size: i % 4 === 0 ? 2 : 1,
+  delay: `${(i % 6) * 0.5}s`,
+}));
 const TWIN_A = { x: 148, y: 296 };
 const TWIN_B = { x: 252, y: 332 };
 
@@ -47,6 +54,7 @@ export default function StarChartOpening() {
 
       if (reducedMotion) {
         gsap.set(q("[data-settle]"), { opacity: 1 });
+        gsap.set(q("[data-prelude]"), { display: "none" });
         gsap.set(q("[data-chart]"), { opacity: 1, scale: 1 });
         gsap.set(q("[data-glint]"), { opacity: 0.8 });
         gsap.set(q("[data-twin]"), { opacity: 1, scale: 1 });
@@ -58,10 +66,57 @@ export default function StarChartOpening() {
         return;
       }
 
+      // ── Part 0 · The invitation prelude (plays over the first seconds,
+      // then dissolves into the emerging chart; existing beats untouched) ──
+      const intro = gsap.timeline({ defaults: { ease: "power2.out" } });
+
+      intro.fromTo(q("[data-prelude]"), { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0);
+      intro.fromTo(
+        q("[data-pre-star]"),
+        { opacity: 0 },
+        { opacity: 0.9, duration: 1.2, stagger: 0.05 },
+        0.1
+      );
+      intro.fromTo(
+        q("[data-pre-moon]"),
+        { opacity: 0, scale: 0.8 },
+        { opacity: 1, scale: 1, duration: 1.6 },
+        0.2
+      );
+      // An owl crosses once — a brief shadow, never a character.
+      intro.fromTo(
+        q("[data-owl]"),
+        { x: () => -window.innerWidth * 0.25, y: 30, opacity: 0 },
+        { x: () => window.innerWidth * 1.15, y: -40, opacity: 0.9, duration: 2.4, ease: "none" },
+        0.5
+      );
+      intro.to(q("[data-owl]"), { opacity: 0, duration: 0.5 }, 2.4);
+      // The letter arrives; enchanted ink writes itself.
+      intro.fromTo(
+        q("[data-letter]"),
+        { opacity: 0, y: 14, scale: 0.97 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.8 },
+        1.0
+      );
+      intro.fromTo(
+        q("[data-ink-a]"),
+        { opacity: 0, filter: "blur(6px)" },
+        { opacity: 1, filter: "blur(0px)", duration: 1.0 },
+        1.7
+      );
+      intro.fromTo(
+        q("[data-ink-b]"),
+        { opacity: 0, filter: "blur(6px)" },
+        { opacity: 1, filter: "blur(0px)", duration: 1.0 },
+        2.9
+      );
+      // The letter dissolves into the emerging chart.
+      intro.to(q("[data-letter]"), { opacity: 0, y: -18, filter: "blur(5px)", duration: 0.9 }, 3.9);
+      intro.to(q("[data-prelude]"), { opacity: 0, duration: 0.8 }, 4.5);
+
       // ── Part 1 · Automatic cinematic intro (plays without scrolling) ──
       // Darkness and stars breathe in the first second, then the chart
       // emerges, the fated stars ignite, and the constellation draws itself.
-      const intro = gsap.timeline({ defaults: { ease: "power2.out" } });
 
       intro.fromTo(q("[data-glow]"), { opacity: 0 }, { opacity: 1, duration: 0.9 }, 0.15);
       intro.fromTo(
@@ -113,6 +168,8 @@ export default function StarChartOpening() {
       });
 
       scrub.to(q("[data-hint]"), { opacity: 0, duration: 0.2 }, 0.12);
+      // Scrolling early dismisses the prelude instantly.
+      scrub.to(q("[data-prelude]"), { opacity: 0, duration: 0.08 }, 0);
       scrub.to(q("[data-chart]"), { scale: 1.14, duration: 0.3 }, 0);
       scrub.to(q("[data-chart]"), { opacity: 0, scale: 1.28, filter: "blur(6px)", duration: 0.4 }, 0.5);
       scrub.to(q("[data-chart-ui]"), { opacity: 0, duration: 0.25 }, 0.55);
@@ -241,6 +298,43 @@ export default function StarChartOpening() {
 
         <div className={styles.hint} data-hint aria-hidden="true">
           <ScrollCue label={opening.scrollHint} />
+        </div>
+
+        {/* Invitation prelude: night, a passing owl, a letter in ink. */}
+        <div className={styles.prelude} data-prelude aria-hidden="true">
+          <div className={styles.preMoon} data-pre-moon />
+          {PRE_STARS.map((s, i) => (
+            <span
+              key={i}
+              data-pre-star
+              className={styles.preStar}
+              style={{
+                top: s.top,
+                left: s.left,
+                width: s.size,
+                height: s.size,
+                animationDelay: s.delay,
+              }}
+            />
+          ))}
+          <svg className={styles.owl} data-owl viewBox="0 0 120 40">
+            <path
+              d="M4 26 Q 30 6, 60 22 Q 90 6, 116 26 Q 90 18, 60 30 Q 30 18, 4 26 Z"
+              fill="#04070e"
+              opacity="0.92"
+            />
+          </svg>
+          <div className={styles.letter} data-letter>
+            <p className={styles.seal}>
+              <MoonPhase phase="new" />✦
+            </p>
+            <p className={styles.ink} data-ink-a>
+              You are invited&hellip;
+            </p>
+            <p className={styles.ink} data-ink-b>
+              &hellip;to witness a story written in the stars.
+            </p>
+          </div>
         </div>
 
         <div className={styles.vignette} aria-hidden="true" />

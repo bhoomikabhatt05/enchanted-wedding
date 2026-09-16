@@ -6,6 +6,7 @@ import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
 import { useScrollReveal } from "../../hooks/useScrollReveal";
 import StoryImage from "../../components/StoryImage";
 import Label from "../../components/Label";
+import MoonPhase from "../../components/MoonPhase";
 import styles from "./Memories.module.css";
 
 const MOMENTUM_FRICTION = 0.95;
@@ -290,6 +291,7 @@ const handleDistortion = (event) => {
 
       <div className={styles.head}>
         <Label className={styles.eyebrow} data-scroll-reveal>
+          <MoonPhase phase="full" />
           {memories.chapter}
         </Label>
         <h2 className={styles.title} data-scroll-reveal>

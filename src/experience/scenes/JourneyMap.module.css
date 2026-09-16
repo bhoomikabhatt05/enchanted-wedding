@@ -427,6 +427,37 @@
   border-radius: 2px;
 }
 
+/* The photograph breathes — barely. "Did that just move?" */
+.printActive img {
+  animation: photo-breathe 16s ease-in-out infinite alternate;
+}
+
+@keyframes photo-breathe {
+  from {
+    scale: 1;
+    translate: 0 0;
+  }
+  to {
+    scale: 1.07;
+    translate: -0.6% -0.8%;
+  }
+}
+
+@media (hover: hover) {
+  /* Stars brighten under a curious cursor; prints lift a breath. */
+  .mapSvg [data-map-node] {
+    transition: opacity 0.5s ease, filter 0.3s ease;
+  }
+
+  .mapSvg [data-map-node]:hover {
+    filter: brightness(1.35);
+  }
+
+  .printActive:hover {
+    translate: 0 -3px;
+  }
+}
+
 /* Thin gold hairline inside the print — a memory, mounted. */
 .printFrame::after {
   content: "";
