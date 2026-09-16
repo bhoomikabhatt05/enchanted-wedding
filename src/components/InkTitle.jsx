@@ -49,7 +49,6 @@ export default function InkTitle({
               {ch}
             </span>
           ))}
-          {wi < words.length - 1 ? " " : null}
         </span>
       ))}
       {underline ? (

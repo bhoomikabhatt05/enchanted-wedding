@@ -7,6 +7,12 @@
   white-space: nowrap;
 }
 
+/* Inter-word space as margin: trailing text-node spaces are stripped
+   inside inline-blocks, which once fused every word together. */
+.word + .word {
+  margin-left: 0.24em;
+}
+
 .letter {
   display: inline-block;
   will-change: opacity, filter;

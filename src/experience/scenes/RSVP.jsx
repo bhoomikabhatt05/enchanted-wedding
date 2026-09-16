@@ -48,7 +48,18 @@ function InkStamp({ visible, sealed }) {
       viewBox="0 0 120 120"
       aria-hidden="true"
     >
-      <circle cx="60" cy="60" r="54" fill="#8d2630" />
+      <defs>
+        <radialGradient id="waxBody" cx="38%" cy="30%" r="80%">
+          <stop offset="0%" stopColor="#b03a44" />
+          <stop offset="45%" stopColor="#8d2630" />
+          <stop offset="100%" stopColor="#571219" />
+        </radialGradient>
+      </defs>
+      <path
+        d="M116.2 60.0 L115.2 67.3 L113.0 74.2 L110.1 80.8 L107.0 87.1 L103.3 93.2 L98.6 98.6 L92.9 102.8 L86.4 105.8 L79.8 107.8 L73.3 109.8 L66.8 111.9 L60.0 113.6 L52.9 114.2 L45.7 113.2 L39.0 110.6 L32.8 107.2 L26.8 103.3 L21.0 99.0 L15.8 93.9 L11.7 87.9 L9.2 81.0 L8.3 73.9 L8.2 66.8 L8.2 60.0 L8.1 53.2 L8.6 46.2 L10.3 39.4 L13.4 33.1 L17.6 27.5 L22.3 22.3 L27.1 17.2 L32.4 12.2 L38.5 8.1 L45.4 5.5 L52.7 4.8 L60.0 5.6 L67.0 7.2 L73.7 8.9 L80.4 10.9 L86.8 13.6 L92.6 17.6 L97.4 22.6 L101.4 28.2 L105.2 33.9 L109.0 39.7 L112.6 45.9 L115.3 52.7 Z"
+        fill="url(#waxBody)"
+      />
+      <ellipse cx="44" cy="40" rx="22" ry="14" fill="#ffb3ab" opacity="0.16" transform="rotate(-18 44 40)" />
       <circle cx="60" cy="60" r="54" fill="none" stroke="#e8d7b5" strokeWidth="2.5" opacity="0.9" />
       <circle cx="60" cy="60" r="47" fill="none" stroke="#e8d7b5" strokeWidth="1" opacity="0.7" strokeDasharray="3 4" />
       <path d="M 60 14 l 2.4 4.6 5.1 0.7 -3.7 3.6 0.9 5 -4.7 -2.5 -4.7 2.5 0.9 -5 -3.7 -3.6 5.1 -0.7 Z" fill="#e8d7b5" />

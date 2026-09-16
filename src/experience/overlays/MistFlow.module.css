@@ -69,6 +69,26 @@
   will-change: transform, opacity;
 }
 
+/* A fainter travelling wisp for the lesser crossings. */
+.wisp {
+  position: absolute;
+  top: 52%;
+  left: -20%;
+  width: 140%;
+  height: 1px;
+  opacity: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 233, 173, 0.7) 40%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 233, 173, 0.7) 60%,
+    transparent
+  );
+  filter: blur(1px);
+  will-change: transform, opacity;
+}
+
 /* Magical residue — two letterforms adrift in the great page-turns only. */
 .mote {
   position: absolute;

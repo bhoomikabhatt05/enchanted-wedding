@@ -52,6 +52,17 @@ export default function MistFlow({ reducedMotion = false, storyRef = null }) {
         tl.set(bank, { xPercent: direction * 46, opacity: 0 })
           .to(bank, { xPercent: direction * -48, opacity: 0.85, duration: 0.48 }, 0)
           .to(bank, { xPercent: direction * -150, opacity: 0, duration: 0.42 }, 0.58);
+        // Every crossing carries a faint travelling spark; the map → big day
+        // crossing alone gets the full wand streak and the parting clouds.
+        const wisp = bank.querySelector("[data-bank-streak]");
+        if (wisp) {
+          tl.fromTo(
+            wisp,
+            { xPercent: -70, opacity: 0 },
+            { xPercent: 70, opacity: 0.45, duration: 0.2 },
+            0.6
+          ).to(wisp, { opacity: 0, duration: 0.14 }, 0.8);
+        }
         // The page-turn: for the map → big day crossing only, the wand's
         // spark streaks across as the bank dramatically parts to clear.
         if (i === 2) {
@@ -96,6 +107,7 @@ export default function MistFlow({ reducedMotion = false, storyRef = null }) {
             <span className={`${styles.blob} ${styles.blobB}`} />
             <span className={`${styles.blob} ${styles.blobC}`} />
             {i === 2 ? <span className={styles.streak} data-wand-streak /> : null}
+            {i !== 2 ? <span className={styles.wisp} data-bank-streak /> : null}
             {i === 2 || i === 4 ? (
               <>
                 <span className={`${styles.mote} ${styles.moteA}`} aria-hidden="true">A</span>

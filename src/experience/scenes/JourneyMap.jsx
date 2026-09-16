@@ -44,6 +44,12 @@ const WIDE = {
     { x: 1255, y: 490, r: 85 },
   ],
   wand: { x: 1290, y: 690 },
+  compass: { x: 118, y: 112 },
+  sparkles: [
+    [350, 180, 0.55],
+    [1150, 600, 0.5],
+    [1050, 150, 0.45],
+  ],
 };
 
 const TALL = {
@@ -64,6 +70,12 @@ const TALL = {
     { x: 735, y: 190, r: 80 },
   ],
   wand: { x: 830, y: 700 },
+  compass: { x: 600, y: 92 },
+  sparkles: [
+    [838, 560, 0.5],
+    [572, 250, 0.45],
+    [700, 706, 0.5],
+  ],
 };
 
 // A four-pointed star, drawn around each milestone marker's origin.
@@ -632,6 +644,28 @@ function MapArt({ routeRef, mapSrc, litAll, layout, notesOpacity }) {
       ))}
 
       <Constellation fractions={layout.fractions} routeD={layout.route} />
+
+      {/* A quiet compass and a few hand-drawn stars — the map's furniture. */}
+      <g opacity="0.5" aria-hidden="true">
+        <circle cx={layout.compass.x} cy={layout.compass.y} r="30" fill="none" stroke="#c9a96b" strokeWidth="1" />
+        <circle cx={layout.compass.x} cy={layout.compass.y} r="24" fill="none" stroke="#c9a96b" strokeWidth="0.75" opacity="0.7" />
+        <path
+          d={`M ${layout.compass.x} ${layout.compass.y - 26} L ${layout.compass.x + 5} ${layout.compass.y + 8} L ${layout.compass.x} ${layout.compass.y + 2} L ${layout.compass.x - 5} ${layout.compass.y + 8} Z`}
+          fill="#e8d7b5"
+          opacity="0.9"
+        />
+        <circle cx={layout.compass.x} cy={layout.compass.y} r="2" fill="#e8d7b5" />
+      </g>
+      {layout.sparkles.map(([sx, sy, ss], k) => (
+        <path
+          key={k}
+          d={STAR_D}
+          transform={`translate(${sx} ${sy}) scale(${ss})`}
+          fill="#e8d7b5"
+          opacity="0.35"
+          aria-hidden="true"
+        />
+      ))}
 
       {layout.notes.map((note) => (
         <text

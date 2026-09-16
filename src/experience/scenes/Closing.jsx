@@ -52,6 +52,7 @@ export default function Closing() {
       if (!twins || reducedMotion) return;
       const thread = twins.querySelector(`.${styles.thread}`);
       const mid = twins.querySelector(`.${styles.mid}`);
+      const spark = twins.querySelector("[data-spark]");
       const flares = [...twins.querySelectorAll(`.${styles.flare}`)];
       const glows = [...twins.querySelectorAll(`.${styles.glow}`)];
       if (!thread) return;
@@ -72,6 +73,14 @@ export default function Closing() {
         { attr: { strokeDasharray: len, strokeDashoffset: len, opacity: 1 } },
         { attr: { strokeDashoffset: 0 }, duration: 0.95, ease: "power2.inOut" }
       )
+        // A final spark travels the thread as it draws.
+        .fromTo(
+          spark,
+          { attr: { cx: 72, opacity: 0 } },
+          { attr: { cx: 128, opacity: 1 }, duration: 0.95, ease: "power2.inOut" },
+          "<"
+        )
+        .to(spark, { attr: { opacity: 0 }, duration: 0.3 }, ">-0.15")
         // The joining star ignites as the thread meets it.
         .fromTo(
           mid,
@@ -175,6 +184,7 @@ export default function Closing() {
           <circle className={styles.flare} cx="72" cy="30" r="3" fill="#e8d7b5" opacity="0" />
           <circle className={styles.flare} cx="128" cy="30" r="3" fill="#e8d7b5" opacity="0" />
           <circle className={styles.mid} cx="100" cy="30" r="2" fill="#fff7dc" opacity="0" />
+          <circle data-spark cx="72" cy="30" r="2.2" fill="#fff7dc" opacity="0" />
           <circle cx="72" cy="30" r="3" fill="#fff7dc" stroke="#c9a96b" strokeWidth="0.8" />
           <circle cx="128" cy="30" r="3" fill="#fff7dc" stroke="#c9a96b" strokeWidth="0.8" />
         </svg>
