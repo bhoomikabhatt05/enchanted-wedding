@@ -199,6 +199,18 @@
 
 .chapter {
   color: #d9c391;
+  font-size: 0.62rem;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  opacity: 0.9;
+}
+
+.chapter::after {
+  content: "✦";
+  margin-left: 0.55em;
+  font-size: 0.9em;
+  color: var(--color-antique-gold);
+  opacity: 0.75;
 }
 
 .lede {
@@ -215,7 +227,7 @@
   margin-top: var(--space-s);
 }
 
-/* Milestone words — fixed slot, cross-fading. */
+/* Milestone words — fixed slot, cross-fading, printed into the air. */
 .words {
   position: absolute;
   z-index: 6;
@@ -226,6 +238,16 @@
   text-align: center;
   opacity: 0;
   visibility: hidden;
+}
+
+/* Localized readability: a soft breath of darkness only behind the words. */
+.words::before {
+  content: "";
+  position: absolute;
+  inset: -12% -16%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(50% 50% at 50% 42%, rgba(3, 6, 12, 0.55), transparent 72%);
 }
 
 .word {
@@ -355,7 +377,7 @@
     linear-gradient(175deg, #f6eeda 0%, #e9d9b8 100%);
   background-size: 120px 120px, 100% 100%;
   background-blend-mode: multiply, normal;
-  border-radius: 3px;
+  border-radius: 3px 5px 4px 6px;
   box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.4);
   opacity: 0;
   translate: 0 16px;
@@ -384,6 +406,19 @@
   opacity: 1;
   translate: 0 0;
   scale: 1;
+  animation: print-reveal 0.9s ease both;
+}
+
+/* The memory resolves out of the map: dust, blur, paper, settle. */
+@keyframes print-reveal {
+  from {
+    filter: blur(10px) brightness(1.18);
+    scale: 0.94;
+  }
+  to {
+    filter: blur(0) brightness(1);
+    scale: 1;
+  }
 }
 
 .printFrame {
@@ -409,6 +444,15 @@
   align-items: center;
   gap: 1px;
   text-align: center;
+  opacity: 0;
+  translate: 0 6px;
+  transition: opacity 0.6s ease, translate 0.6s ease;
+}
+
+.printActive .printCaption {
+  opacity: 1;
+  translate: 0 0;
+  transition-delay: 0.35s;
 }
 
 .printYear {
@@ -465,7 +509,7 @@
 }
 
 .star {
-  font-size: 10px;
+  font-size: 9px;
   line-height: 1;
   color: rgba(232, 215, 181, 0.22);
   transition: color 0.5s ease, text-shadow 0.5s ease;
@@ -481,7 +525,7 @@
 }
 
 .link {
-  width: 22px;
+  width: 18px;
   height: 1px;
   background: rgba(201, 169, 107, 0.3);
 }

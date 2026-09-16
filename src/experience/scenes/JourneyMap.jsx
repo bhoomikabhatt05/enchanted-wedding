@@ -34,6 +34,15 @@ const WIDE = {
     { i: 3, text: "between then and now", x: 965, y: 392 },
     { i: 4, text: "countless nights", x: 1170, y: 372 },
   ],
+  // Soft pools where the illustrated lanterns breathe as the story passes.
+  lanterns: [
+    { x: 150, y: 520, r: 90 },
+    { x: 575, y: 265, r: 80 },
+    { x: 815, y: 475, r: 85 },
+    { x: 890, y: 395, r: 80 },
+    { x: 1255, y: 490, r: 85 },
+  ],
+  wand: { x: 1290, y: 690 },
 };
 
 const TALL = {
@@ -46,6 +55,14 @@ const TALL = {
     { i: 3, text: "between then and now", x: 770, y: 296 },
     { i: 4, text: "countless nights", x: 660, y: 186 },
   ],
+  lanterns: [
+    { x: 575, y: 665, r: 80 },
+    { x: 845, y: 425, r: 75 },
+    { x: 560, y: 420, r: 80 },
+    { x: 845, y: 295, r: 75 },
+    { x: 735, y: 190, r: 80 },
+  ],
+  wand: { x: 830, y: 700 },
 };
 
 // A four-pointed star, drawn around each milestone marker's origin.
@@ -92,8 +109,20 @@ export default function JourneyMap() {
       const q = gsap.utils.selector(root);
       const total = route.getTotalLength();
       const glowPath = q("[data-route-glow]")[0];
+      const shimmer = q("[data-route-shimmer]")[0];
       const traveler = q("[data-traveler]")[0];
       const progress = q("[data-progress-fill]")[0];
+      const wand = q("[data-wand]")[0];
+      const wandArm = q("[data-wand-arm]")[0];
+      const wandArc = q("[data-wand-arc]")[0];
+      const wandSpark = q("[data-wand-spark]")[0];
+      const wandTip = q("[data-wand-tip]")[0];
+      const arcLen = wandArc ? wandArc.getTotalLength() : 0;
+      if (wandArc && arcLen > 0) {
+        wandArc.style.strokeDasharray = `${arcLen}`;
+        wandArc.style.strokeDashoffset = `${arcLen}`;
+      }
+      let lastFlare = -1;
       const light = lightRef.current;
       const mist = mistRef.current;
       const dusk = duskRef.current;
@@ -128,7 +157,7 @@ export default function JourneyMap() {
         const stageRect = stage.getBoundingClientRect();
         const W = stageRect.width;
         const H = stageRect.height;
-        const m = 12;
+        const m = 18;
         const titleB = wordsEl.getBoundingClientRect().bottom - stageRect.top + 10;
         const ticksT = ticksEl
           ? ticksEl.getBoundingClientRect().top - stageRect.top - 10
@@ -163,8 +192,16 @@ export default function JourneyMap() {
           const sides = i % 2
             ? [left, right, leftC, rightC]
             : [right, left, rightC, leftC];
+          // Per-milestone manners: 01 leans inward/up away from the forest
+          // edge, 05 leans inward away from the closing edge.
+          const order =
+            i === 0
+              ? [right, above, aboveC, below, belowC, left, leftC, rightC]
+              : i === milestones.length - 1
+                ? [left, below, belowC, above, aboveC, right, leftC, rightC]
+                : [below, above, belowC, aboveC, ...sides];
           const pick =
-            [below, above, belowC, aboveC, ...sides].find((c) => valid(c.l, c.t)) ||
+            order.find((c) => valid(c.l, c.t)) ||
             ({ l: clampL(below.l), t: clampT(below.t) });
           fig.style.left = `${pick.l.toFixed(1)}px`;
           fig.style.top = `${pick.t.toFixed(1)}px`;
@@ -185,6 +222,16 @@ export default function JourneyMap() {
         }
         if (progress) progress.style.transform = `scaleX(${drawn})`;
 
+        // Shimmer tail: the last stretch of thread glows brighter, so the
+        // story feels physically present at its leading edge.
+        if (shimmer) {
+          const head = drawn * total;
+          const tail = total * 0.055;
+          shimmer.style.strokeDasharray = `${tail.toFixed(1)} ${total.toFixed(1)}`;
+          shimmer.style.strokeDashoffset = `${(total - head).toFixed(1)}`;
+          shimmer.style.opacity = drawn > 0.02 && drawn < 0.995 ? "0.85" : "0";
+        }
+
         // Stars awaken as the thread approaches; past stars stay softly lit.
         // Opacity only — never CSS transforms on SVG nodes (Chromium
         // misplaces them when transform-box/scale is involved).
@@ -198,6 +245,18 @@ export default function JourneyMap() {
         });
         updateActive(current);
 
+        // Activation flare: a halo expands once as each star awakens.
+        if (current !== lastFlare) {
+          lastFlare = current;
+          try {
+            q("[data-flare-ring]")[current]
+              ?.querySelectorAll("animate")
+              .forEach((anim) => anim.beginElement());
+          } catch {
+            // SMIL unavailable — the glow still carries the moment.
+          }
+        }
+
         // Marginalia: the active memory's name is inked bright, the previous
         // one lingers faintly, the rest rest. Never more than two prominent.
         q("[data-marginalia]").forEach((note) => {
@@ -205,11 +264,71 @@ export default function JourneyMap() {
           note.style.opacity = i === current ? "0.95" : i === current - 1 ? "0.45" : "0";
         });
 
+        // Lantern regions breathe as the thread passes: bright while the
+        // story is near, a low warm remainder once it has passed by.
+        q("[data-lantern]").forEach((lamp, j) => {
+          const f = layout.fractions[j];
+          const prox = Math.exp(-((drawn - f) ** 2) / (2 * 0.11 ** 2));
+          lamp.style.opacity = `${(0.5 * prox + (drawn > f ? 0.14 : 0)).toFixed(3)}`;
+        });
+
+        // The five stars briefly join into one constellation at the finale.
+        q("[data-const-line]").forEach((line) => {
+          const len = parseFloat(line.dataset.len || "0");
+          const w = clamp01((progressClamped - 0.93) / 0.05);
+          const out = 1 - clamp01((progressClamped - 0.982) / 0.018);
+          if (len > 0) line.style.strokeDashoffset = `${(len * (1 - w)).toFixed(1)}`;
+          line.style.opacity = `${(w * 0.7 * out).toFixed(3)}`;
+        });
+
         // Whisper drift on light and mist only — the map itself is perfectly
         // still, so cover edges can never show.
         if (light)
           light.style.transform = `translate3d(${(-30 + progressClamped * 60).toFixed(1)}px, 0, 0)`;
-        if (mist) mist.style.transform = `translate3d(${(-progressClamped * 48).toFixed(2)}px, 0, 0)`;
+        if (mist) {
+          mist.style.transform = `translate3d(${(-progressClamped * 48).toFixed(2)}px, 0, 0)`;
+          // Light mist passes while travelling between milestones, then clears.
+          const fa = layout.fractions[current];
+          const fb = layout.fractions[Math.min(current + 1, layout.fractions.length - 1)];
+          const span = Math.max(fb - fa, 0.001);
+          const t = clamp01((drawn - fa) / span);
+          mist.style.opacity = `${(0.35 + 0.25 * Math.sin(Math.PI * t)).toFixed(3)}`;
+        }
+
+        // The wand exists for one page-turn only: it enters, makes a single
+        // movement, looses its spark across the dark, and is gone with the mist.
+        if (wand) {
+          const wIn = clamp01((progressClamped - 0.925) / 0.02);
+          const wOut = 1 - clamp01((progressClamped - 0.982) / 0.018);
+          wand.style.opacity = `${(wIn * wOut).toFixed(3)}`;
+          if (wandArm) {
+            const sweep = Math.sin(Math.PI * clamp01((progressClamped - 0.938) / 0.045));
+            wandArm.setAttribute("transform", `rotate(${(-16 * sweep).toFixed(2)} 0 0)`);
+          }
+          if (wandTip) wandTip.style.opacity = `${(wIn * (0.4 + 0.6 * clamp01((progressClamped - 0.93) / 0.03))).toFixed(3)}`;
+          if (wandArc && arcLen > 0) {
+            const a = clamp01((progressClamped - 0.945) / 0.03);
+            wandArc.style.strokeDashoffset = `${(arcLen * (1 - a)).toFixed(1)}`;
+          }
+          if (wandSpark && arcLen > 0) {
+            const s = clamp01((progressClamped - 0.962) / 0.03);
+            let sx = 0;
+            let sy = 0;
+            if (s <= 0.45 && s > 0) {
+              const tip = wandArc.getPointAtLength((s / 0.45) * arcLen);
+              sx = tip.x;
+              sy = tip.y;
+            } else if (s > 0.45) {
+              const end = wandArc.getPointAtLength(arcLen);
+              const u = (s - 0.45) / 0.55;
+              sx = end.x + 170 * u;
+              sy = end.y - 30 * u;
+            }
+            wandSpark.setAttribute("cx", sx.toFixed(1));
+            wandSpark.setAttribute("cy", sy.toFixed(1));
+            wandSpark.setAttribute("opacity", s > 0 && s < 1 ? "1" : "0");
+          }
+        }
 
         // Opening words yield early; closing words arrive with the dusk.
         if (intro) {
@@ -441,6 +560,11 @@ function MapArt({ routeRef, mapSrc, litAll, layout, notesOpacity }) {
           <stop offset="55%" stopColor="#c9a96b" stopOpacity="0.35" />
           <stop offset="100%" stopColor="#c9a96b" stopOpacity="0" />
         </radialGradient>
+        <radialGradient id="journeyLantern" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#f2c979" stopOpacity="0.55" />
+          <stop offset="55%" stopColor="#e8a94e" stopOpacity="0.22" />
+          <stop offset="100%" stopColor="#e8a94e" stopOpacity="0" />
+        </radialGradient>
         <filter id="journeyBloom" x="-60%" y="-60%" width="220%" height="220%">
           <feGaussianBlur stdDeviation="2.4" result="blur" />
           <feColorMatrix values="1 1 1 0 0  1 1 1 0 0  1 1 1 0 0  0 0 0 0.55 0" />
@@ -477,6 +601,21 @@ function MapArt({ routeRef, mapSrc, litAll, layout, notesOpacity }) {
         <MilestoneNode key={i} fraction={f} routeD={layout.route} lit={litAll} pulse={!litAll} />
       ))}
 
+      {/* Lantern regions breathe as the story passes through them. */}
+      {layout.lanterns.map((lamp, j) => (
+        <circle
+          key={j}
+          data-lantern
+          cx={lamp.x}
+          cy={lamp.y}
+          r={lamp.r}
+          fill="url(#journeyLantern)"
+          opacity="0"
+        />
+      ))}
+
+      <Constellation fractions={layout.fractions} routeD={layout.route} />
+
       {layout.notes.map((note) => (
         <text
           key={note.text}
@@ -499,8 +638,80 @@ function MapArt({ routeRef, mapSrc, litAll, layout, notesOpacity }) {
         </text>
       ))}
 
+      <path
+        data-route-shimmer
+        d={layout.route}
+        fill="none"
+        stroke="#fff3d0"
+        strokeWidth="5"
+        strokeLinecap="round"
+        opacity="0"
+        filter="url(#journeyBloom)"
+      />
+
       <circle data-traveler r="6" fill="#fff7dc" stroke="#c9a96b" strokeWidth="1.4" opacity="0" filter="url(#journeyBloom)" />
+
+      {/* The wand — one page-turn at the very end, then gone with the mist. */}
+      <g data-wand opacity="0" transform={`translate(${layout.wand.x} ${layout.wand.y})`}>
+        <g data-wand-arm>
+          <line x1="0" y1="0" x2="-34" y2="-64" stroke="#4a3320" strokeWidth="6" strokeLinecap="round" />
+          <line x1="0" y1="0" x2="-34" y2="-64" stroke="#8a6a3f" strokeWidth="2" strokeLinecap="round" opacity="0.8" />
+          <line x1="-28" y1="-52" x2="-34" y2="-64" stroke="#c9a96b" strokeWidth="7" strokeLinecap="round" />
+          <circle data-wand-tip cx="-34" cy="-64" r="3" fill="#ffe9ad" opacity="0" />
+        </g>
+        <path
+          data-wand-arc
+          d="M-34 -64 C -10 -92, 18 -90, 30 -70"
+          fill="none"
+          stroke="#e8c87e"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+        <circle data-wand-spark r="4.5" fill="#fff7dc" opacity="0" filter="url(#journeyBloom)" />
+      </g>
     </svg>
+  );
+}
+
+function Constellation({ fractions, routeD }) {
+  const refs = useRef([]);
+  useGSAP(
+    () => {
+      const probe = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      probe.setAttribute("d", routeD);
+      const total = probe.getTotalLength();
+      refs.current.forEach((line, k) => {
+        if (!line) return;
+        const a = probe.getPointAtLength(fractions[k] * total);
+        const b = probe.getPointAtLength(fractions[k + 1] * total);
+        line.setAttribute("x1", a.x);
+        line.setAttribute("y1", a.y);
+        line.setAttribute("x2", b.x);
+        line.setAttribute("y2", b.y);
+        const len = Math.hypot(b.x - a.x, b.y - a.y);
+        line.dataset.len = len;
+        line.style.strokeDasharray = `${len}`;
+        line.style.strokeDashoffset = `${len}`;
+      });
+    },
+    { dependencies: [fractions, routeD] }
+  );
+
+  return (
+    <g>
+      {fractions.slice(0, -1).map((_, k) => (
+        <line
+          key={k}
+          data-const-line
+          ref={(el) => {
+            refs.current[k] = el;
+          }}
+          stroke="#ffe9ad"
+          strokeWidth="1.6"
+          opacity="0"
+        />
+      ))}
+    </g>
   );
 }
 
@@ -524,9 +735,13 @@ function MilestoneNode({ fraction, routeD, lit, pulse }) {
   return (
     <g ref={ref} data-map-node opacity={lit ? "1" : "0.25"}>
       <circle r="24" fill="url(#journeyNodeGlow)" />
-      <circle className={styles.nodeRing} r="16" fill="none" stroke="#c9a96b" strokeWidth="1.2" strokeDasharray="2 5">
-        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="28s" repeatCount="indefinite" />
-      </circle>
+      {pulse ? (
+        <circle className={styles.nodeRing} r="16" fill="none" stroke="#c9a96b" strokeWidth="1.2" strokeDasharray="2 5">
+          <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="28s" repeatCount="indefinite" />
+        </circle>
+      ) : (
+        <circle r="16" fill="none" stroke="#c9a96b" strokeWidth="1.2" strokeDasharray="2 5" opacity="0.6" />
+      )}
       {pulse ? (
         <circle className={styles.nodePulse} r="10" fill="none" stroke="#ffe9ad" strokeWidth="1.6">
           <animate attributeName="r" values="10;30" dur="2.6s" repeatCount="indefinite" />
@@ -535,6 +750,14 @@ function MilestoneNode({ fraction, routeD, lit, pulse }) {
       ) : (
         <circle r="14" fill="none" stroke="#ffe9ad" strokeWidth="1.2" opacity="0.5" />
       )}
+      {/* One-shot halo flare fired when this star awakens. Base state is
+          identical to the animation end, so no freeze is needed. */}
+      {pulse ? (
+        <circle data-flare-ring r="12" fill="none" stroke="#fff3d0" strokeWidth="2" opacity="0">
+          <animate attributeName="r" values="12;46" dur="1.1s" begin="indefinite" />
+          <animate attributeName="opacity" values="0.85;0" dur="1.1s" begin="indefinite" />
+        </circle>
+      ) : null}
       <path d={STAR_D} fill="url(#journeyGold)" stroke="#fff2c8" strokeWidth="0.8" />
       <circle r="2.4" fill="#fff7dc" />
       {pulse ? (

@@ -48,6 +48,27 @@
   background: radial-gradient(closest-side, rgba(181, 205, 226, 0.11), rgba(181, 205, 226, 0.03) 52%, transparent 70%);
 }
 
+/* The wand's spark streak — only ever mounted in the map → big day bank,
+   only ever lit while that page turns. */
+.streak {
+  position: absolute;
+  top: 46%;
+  left: -20%;
+  width: 140%;
+  height: 2px;
+  opacity: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #ffe9ad 30%,
+    #ffffff 50%,
+    #ffe9ad 70%,
+    transparent
+  );
+  filter: blur(1px);
+  will-change: transform, opacity;
+}
+
 /* Counter-roll: inner blobs drift inside the bank as it crosses, so the
    cloud has motion at two depths. */
 .bank[data-mist-parity="out"] .blobA { animation: rollForth 26s ease-in-out infinite alternate; }

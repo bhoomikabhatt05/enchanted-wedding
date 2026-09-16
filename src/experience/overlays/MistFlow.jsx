@@ -52,6 +52,23 @@ export default function MistFlow({ reducedMotion = false, storyRef = null }) {
         tl.set(bank, { xPercent: direction * 46, opacity: 0 })
           .to(bank, { xPercent: direction * -48, opacity: 0.85, duration: 0.48 }, 0)
           .to(bank, { xPercent: direction * -150, opacity: 0, duration: 0.42 }, 0.58);
+        // The page-turn: for the map → big day crossing only, the wand's
+        // spark streaks across as the bank dramatically parts to clear.
+        if (i === 2) {
+          const streak = bank.querySelector("[data-wand-streak]");
+          const top = bank.querySelector(`.${styles.blobA}`);
+          const bottom = bank.querySelector(`.${styles.blobC}`);
+          if (streak) {
+            tl.fromTo(
+              streak,
+              { xPercent: -70, opacity: 0 },
+              { xPercent: 70, opacity: 1, duration: 0.2 },
+              0.6
+            ).to(streak, { opacity: 0, duration: 0.14 }, 0.8);
+          }
+          if (top) tl.to(top, { yPercent: -38, duration: 0.35 }, 0.58);
+          if (bottom) tl.to(bottom, { yPercent: 38, duration: 0.35 }, 0.58);
+        }
       });
 
       return () => {
@@ -68,18 +85,19 @@ export default function MistFlow({ reducedMotion = false, storyRef = null }) {
       aria-hidden="true"
       data-reduced-motion={reducedMotion ? "true" : "false"}
     >
-      {Array.from({ length: 5 }, (_, i) => (
-        <div
-          key={i}
-          className={styles.bank}
-          data-mist-bank={i}
-          data-mist-parity={i % 2 === 0 ? "out" : "in"}
-        >
-          <span className={`${styles.blob} ${styles.blobA}`} />
-          <span className={`${styles.blob} ${styles.blobB}`} />
-          <span className={`${styles.blob} ${styles.blobC}`} />
-        </div>
-      ))}
+        {Array.from({ length: 5 }, (_, i) => (
+          <div
+            key={i}
+            className={styles.bank}
+            data-mist-bank={i}
+            data-mist-parity={i % 2 === 0 ? "out" : "in"}
+          >
+            <span className={`${styles.blob} ${styles.blobA}`} />
+            <span className={`${styles.blob} ${styles.blobB}`} />
+            <span className={`${styles.blob} ${styles.blobC}`} />
+            {i === 2 ? <span className={styles.streak} data-wand-streak /> : null}
+          </div>
+        ))}
     </div>
   );
 }
