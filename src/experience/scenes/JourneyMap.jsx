@@ -86,7 +86,7 @@ const STAR_D =
 // closing line, mist handoff) has room to breathe.
 const ROUTE_END = 0.94;
 // Milestones awaken just before the thread reaches them.
-const AWAKEN_LEAD = 0.05;
+const AWAKEN_LEAD = 0.06;
 
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
@@ -142,6 +142,8 @@ export default function JourneyMap() {
       const intro = introRef.current;
       const words = wordsRef.current;
       const closing = closingRef.current;
+      const prints = q("[data-prints]")[0];
+      const ticks = ticksRef.current;
       const mq = window.matchMedia("(min-aspect-ratio: 1/1)");
       const onLayout = (e) => setWide(e.matches);
       if (mq.addEventListener) mq.addEventListener("change", onLayout);
@@ -368,16 +370,26 @@ export default function JourneyMap() {
         }
         if (words) {
           const fadeIn = clamp01((progressClamped - 0.04) / 0.06);
-          const fadeOut = clamp01((progressClamped - 0.9) / 0.06);
+          // The words leave well before the page turns, so the finale
+          // belongs to the closing line alone.
+          const fadeOut = clamp01((progressClamped - 0.9) / 0.04);
           words.style.opacity = `${fadeIn * (1 - fadeOut)}`;
           words.style.visibility = fadeIn > 0 && fadeOut < 1 ? "visible" : "hidden";
         }
         if (dusk) dusk.style.opacity = `${(clamp01((progressClamped - 0.85) / 0.15) * 0.6).toFixed(3)}`;
         if (closing) {
-          const t = clamp01((progressClamped - 0.9) / 0.08);
-          closing.style.opacity = `${t}`;
-          closing.style.visibility = t > 0 ? "visible" : "hidden";
+          const t = clamp01((progressClamped - 0.9) / 0.045);
+          // The closing line has its moment, then leaves with margin to
+          // spare — scrub lag must never strand it past the turn.
+          const out = 1 - clamp01((progressClamped - 0.95) / 0.035);
+          closing.style.opacity = `${(t * out).toFixed(3)}`;
+          closing.style.visibility = t > 0 && out > 0 ? "visible" : "hidden";
         }
+        // Page-turn: prints and progress dissolve before the section
+        // releases, so no Journey content lingers into the Events heading.
+        const exit = 1 - clamp01((progressClamped - 0.945) / 0.035);
+        if (prints) prints.style.opacity = `${exit.toFixed(3)}`;
+        if (ticks) ticks.style.opacity = `${exit.toFixed(3)}`;
       };
 
       gsap.to(

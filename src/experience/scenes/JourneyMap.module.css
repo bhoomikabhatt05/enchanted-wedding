@@ -259,7 +259,8 @@
   gap: 0.35rem;
   opacity: 0;
   translate: 0 10px;
-  transition: opacity 0.7s ease, translate 0.7s ease;
+  /* A memory leaves quickly… */
+  transition: opacity 0.45s ease, translate 0.45s ease;
   pointer-events: none;
 }
 
@@ -270,6 +271,8 @@
 .wordActive {
   opacity: 1;
   translate: 0 0;
+  /* …and the next one arrives only once it has gone. */
+  transition: opacity 0.6s ease 0.25s, translate 0.6s ease 0.25s;
 }
 
 .step {
@@ -289,6 +292,7 @@
   line-height: 1.05;
   color: #f4ead0;
   text-wrap: balance;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65);
 }
 
 /* A slow light passing across milestone titles. Idle most of each cycle. */
@@ -325,6 +329,7 @@
   font-size: clamp(1.45rem, 3.6vw, 2rem);
   line-height: 1.1;
   color: rgba(232, 215, 181, 0.92);
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.7);
 }
 
 .note {
@@ -384,10 +389,10 @@
   scale: 0.96;
   filter: blur(6px);
   transition:
-    opacity 0.8s ease,
-    translate 0.8s ease,
-    scale 0.8s ease,
-    filter 0.8s ease;
+    opacity 0.5s ease,
+    translate 0.5s ease,
+    scale 0.5s ease,
+    filter 0.5s ease;
   pointer-events: none;
 }
 
@@ -412,7 +417,12 @@
   translate: 0 0;
   scale: 1;
   filter: blur(0);
-  animation: print-reveal 0.9s ease both;
+  transition:
+    opacity 0.8s ease 0.3s,
+    translate 0.8s ease 0.3s,
+    scale 0.8s ease 0.3s,
+    filter 0.8s ease 0.3s;
+  animation: print-reveal 0.9s ease 0.3s both;
 }
 
 /* Warm light passes over the frame once as the memory develops. */

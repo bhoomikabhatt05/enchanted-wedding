@@ -109,12 +109,17 @@ export default function EventDetails() {
 
       // Chapter entry, once: a golden stroke sweeps left → right and the
       // entry mist parts to reveal the estate. Afterwards only the
-      // atmosphere remains.
+      // atmosphere remains. The head and copies stay hidden until the
+      // parting completes, so no Events text meets the Journey farewell.
       const entry = q("[data-entry-mist]")[0];
+      const head = q("[data-head]")[0];
+      const copyWrap = q("[data-copies]")[0];
       if (entry) {
         const halves = q("[data-entry-half]");
         const spark = q("[data-entry-spark]")[0];
         gsap.set(entry, { display: "block" });
+        if (head) gsap.set(head, { autoAlpha: 0 });
+        if (copyWrap) gsap.set(copyWrap, { autoAlpha: 0 });
         gsap.timeline({
           scrollTrigger: { trigger: root, start: "top 78%", once: true },
         })
@@ -133,6 +138,15 @@ export default function EventDetails() {
           )
           .to(entry, { opacity: 0, duration: 0.4 }, 1.1)
           .set(entry, { display: "none" });
+        // The announcement waits until the crossing mist has cleared — head
+        // and copies must never meet the Journey farewell.
+        if (head || copyWrap) {
+          const revealTl = gsap.timeline({
+            scrollTrigger: { trigger: root, start: "top 35%", once: true },
+          });
+          if (head) revealTl.to(head, { autoAlpha: 1, duration: 0.6 }, 0);
+          if (copyWrap) revealTl.to(copyWrap, { autoAlpha: 1, duration: 0.6 }, 0.15);
+        }
       }
 
       scenes.forEach((scene, i) => {
@@ -185,16 +199,16 @@ export default function EventDetails() {
           );
         })}
 
-        <div className={styles.head} aria-hidden={reducedMotion ? undefined : "true"}>
+        <div className={styles.head} data-head aria-hidden={reducedMotion ? undefined : "true"}>
           <Label className={styles.chapter}>
             <MoonPhase phase="gibbous" />
             {event.chapter}
           </Label>
-          <InkTitle as="h2" text={event.title} variant="light" className={styles.title} />
+          <InkTitle as="h2" text={event.title} variant="light" className={styles.title} aria-label={event.title} />
           <p className={styles.invitation}>{event.invitation}</p>
         </div>
 
-        <div className={styles.copies}>
+        <div className={styles.copies} data-copies>
           {BEATS.map((item, i) => (
             <div
               key={item.id}
