@@ -99,6 +99,9 @@ export default function JourneyMap() {
   const mistRef = useRef(null);
   const duskRef = useRef(null);
   const introRef = useRef(null);
+  const introLabelRef = useRef(null);
+  const introLedeRef = useRef(null);
+  const introCueRef = useRef(null);
   const wordsRef = useRef(null);
   const closingRef = useRef(null);
   const ticksRef = useRef(null);
@@ -140,6 +143,9 @@ export default function JourneyMap() {
       const mist = mistRef.current;
       const dusk = duskRef.current;
       const intro = introRef.current;
+      const introLabel = introLabelRef.current;
+      const introLede = introLedeRef.current;
+      const introCue = introCueRef.current;
       const words = wordsRef.current;
       const closing = closingRef.current;
       const prints = q("[data-prints]")[0];
@@ -361,15 +367,20 @@ export default function JourneyMap() {
           }
         }
 
-        // Opening words yield early; closing words arrive with the dusk.
+        // Chapter opening, staged like a title card: chapter marker first,
+        // then the lede, then the cue — then all of it lifts away BEFORE
+        // the first milestone's words arrive. Never two titles at once.
         if (intro) {
-          const t = clamp01(progressClamped / 0.07);
+          if (introLabel) introLabel.style.opacity = `${clamp01(progressClamped / 0.02).toFixed(3)}`;
+          if (introLede) introLede.style.opacity = `${clamp01((progressClamped - 0.015) / 0.035).toFixed(3)}`;
+          if (introCue) introCue.style.opacity = `${clamp01((progressClamped - 0.04) / 0.025).toFixed(3)}`;
+          const t = clamp01((progressClamped - 0.07) / 0.04);
           intro.style.opacity = `${1 - t}`;
           intro.style.transform = `translate3d(0, ${(-34 * t).toFixed(1)}px, 0)`;
           intro.style.visibility = t >= 1 ? "hidden" : "visible";
         }
         if (words) {
-          const fadeIn = clamp01((progressClamped - 0.04) / 0.06);
+          const fadeIn = clamp01((progressClamped - 0.1) / 0.05);
           // The words leave well before the page turns, so the finale
           // belongs to the closing line alone.
           const fadeOut = clamp01((progressClamped - 0.9) / 0.04);
@@ -385,11 +396,12 @@ export default function JourneyMap() {
           closing.style.opacity = `${(t * out).toFixed(3)}`;
           closing.style.visibility = t > 0 && out > 0 ? "visible" : "hidden";
         }
-        // Page-turn: prints and progress dissolve before the section
-        // releases, so no Journey content lingers into the Events heading.
+        // Page-turn: prints and progress arrive only once the title has
+        // yielded, and dissolve before the section releases.
+        const enter = clamp01((progressClamped - 0.05) / 0.05);
         const exit = 1 - clamp01((progressClamped - 0.945) / 0.035);
-        if (prints) prints.style.opacity = `${exit.toFixed(3)}`;
-        if (ticks) ticks.style.opacity = `${exit.toFixed(3)}`;
+        if (prints) prints.style.opacity = `${(enter * exit).toFixed(3)}`;
+        if (ticks) ticks.style.opacity = `${(enter * exit).toFixed(3)}`;
       };
 
       gsap.to(
@@ -504,16 +516,17 @@ export default function JourneyMap() {
 
         {/* Opening words — the map is already visible behind them. */}
         <header ref={introRef} className={styles.intro} data-intro>
-          <Label className={styles.chapter} sigil><MoonPhase phase="half" />{journey.chapter}</Label>
-          <h2 className={styles.lede}>{journey.lede}</h2>
-          <div className={styles.cue}>
+          <div ref={introLabelRef} data-intro-label>
+            <Label className={styles.chapter} sigil><MoonPhase phase="half" />{journey.chapter}</Label>
+          </div>
+          <h2 ref={introLedeRef} data-intro-lede className={styles.lede}>{journey.lede}</h2>
+          <div ref={introCueRef} data-intro-cue className={styles.cue}>
             <ScrollCue label="Follow the golden thread" />
           </div>
         </header>
 
         {/* Milestone words — one composition, cross-fading content. */}
         <div ref={wordsRef} className={styles.words} data-words>
-          <Label className={styles.chapter} sigil><MoonPhase phase="half" />{journey.chapter}</Label>
           {milestones.map((m, i) => (
             <div
               key={m.year}

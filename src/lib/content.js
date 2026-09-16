@@ -66,7 +66,7 @@ export const duo = {
 
 export const journey = {
   chapter: "Chapter V · The Journey of Two Stars",
-  lede: "Every story has a beginning.",
+  lede: "A story has a beginning.",
   milestones: [
     {
       year: "2019",
