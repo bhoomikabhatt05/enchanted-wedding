@@ -4,7 +4,6 @@ import { opening } from "../../lib/content";
 import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
 import { gsap, useGSAP } from "../../lib/gsap";
 import Label from "../../components/Label";
-import MoonPhase from "../../components/MoonPhase";
 import ScrollCue from "../../components/ScrollCue";
 import styles from "./OpeningLetter.module.css";
 
@@ -20,6 +19,14 @@ const PRE_STARS = Array.from({ length: 12 }, (_, i) => ({
   left: `${4 + ((i * 53 + 29) % 92)}%`,
   size: i % 4 === 0 ? 2 : 1,
   delay: `${(i % 6) * 0.5}s`,
+}));
+
+const LETTER_MOTES = Array.from({ length: 6 }, (_, i) => ({
+  top: `${12 + ((i * 47 + 11) % 68)}%`,
+  left: `${6 + ((i * 61 + 19) % 84)}%`,
+  size: i % 2 === 0 ? 1.8 : 1.1,
+  delay: `${(i * 0.7) % 3}s`,
+  duration: `${3.2 + (i % 3) * 0.9}s`,
 }));
 const TWIN_A = { x: 148, y: 296 };
 const TWIN_B = { x: 252, y: 332 };
@@ -91,28 +98,53 @@ export default function StarChartOpening() {
         0.5
       );
       intro.to(q("[data-owl]"), { opacity: 0, duration: 0.5 }, 2.4);
-      // The letter arrives; enchanted ink writes itself.
+      // The letter arrives as a physical object — warm glow, then parchment,
+      // then ink finding the paper as if by an invisible quill.
       intro.fromTo(
         q("[data-letter]"),
-        { opacity: 0, y: 14, scale: 0.97 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.8 },
+        { opacity: 0, y: 18, scale: 0.96, rotation: -1.2 },
+        { opacity: 1, y: 0, scale: 1, rotation: -1.2, duration: 1.0, ease: "power3.out" },
         1.0
       );
       intro.fromTo(
+        q("[data-letter-glow]"),
+        { opacity: 0, scale: 0.85 },
+        { opacity: 1, scale: 1, duration: 1.4, ease: "sine.out" },
+        0.7
+      );
+      intro.fromTo(
+        q("[data-letter-mote]"),
+        { opacity: 0, scale: 0.4 },
+        { opacity: 0.9, scale: 1, duration: 0.7, stagger: 0.08 },
+        1.2
+      );
+      intro.fromTo(
         q("[data-ink-a]"),
-        { opacity: 0, filter: "blur(6px)" },
-        { opacity: 1, filter: "blur(0px)", duration: 1.0 },
-        1.7
+        { opacity: 0, y: 6, filter: "blur(7px)" },
+        { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.1, ease: "power2.out" },
+        1.8
       );
       intro.fromTo(
         q("[data-ink-b]"),
-        { opacity: 0, filter: "blur(6px)" },
-        { opacity: 1, filter: "blur(0px)", duration: 1.0 },
-        2.9
+        { opacity: 0, y: 6, filter: "blur(7px)" },
+        { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.1, ease: "power2.out" },
+        2.8
       );
-      // The letter dissolves into the emerging chart.
-      intro.to(q("[data-letter]"), { opacity: 0, y: -18, filter: "blur(5px)", duration: 0.9 }, 3.9);
-      intro.to(q("[data-prelude]"), { opacity: 0, duration: 0.8 }, 4.5);
+      intro.fromTo(
+        q("[data-ink-flourish]"),
+        { opacity: 0, scaleX: 0.2 },
+        { opacity: 1, scaleX: 1, duration: 0.7, ease: "power2.out" },
+        3.7
+      );
+      intro.fromTo(
+        q("[data-wax-seal]"),
+        { opacity: 0, scale: 0.3, rotation: -12 },
+        { opacity: 1, scale: 1, rotation: -6, duration: 0.6, ease: "back.out(1.7)" },
+        3.9
+      );
+      // The letter lingers a breath, then dissolves into the emerging chart.
+      intro.to(q("[data-letter]"), { opacity: 0, y: -18, filter: "blur(6px)", scale: 0.98, duration: 0.9 }, 5.0);
+      intro.to(q("[data-prelude]"), { opacity: 0, duration: 0.8 }, 5.6);
 
       // ── Part 1 · Automatic cinematic intro (plays without scrolling) ──
       // Darkness and stars breathe in the first second, then the chart
@@ -325,15 +357,46 @@ export default function StarChartOpening() {
             />
           </svg>
           <div className={styles.letter} data-letter>
-            <p className={styles.seal}>
-              <MoonPhase phase="new" />✦
-            </p>
-            <p className={styles.ink} data-ink-a>
-              You are invited&hellip;
-            </p>
-            <p className={styles.ink} data-ink-b>
-              &hellip;to witness a story written in the stars.
-            </p>
+            <div className={styles.letterGlow} data-letter-glow aria-hidden="true" />
+            {LETTER_MOTES.map((m, i) => (
+              <span
+                key={i}
+                data-letter-mote
+                className={styles.letterMote}
+                style={{
+                  top: m.top,
+                  left: m.left,
+                  width: m.size,
+                  height: m.size,
+                  animationDelay: m.delay,
+                  animationDuration: m.duration,
+                }}
+              />
+            ))}
+            <div className={styles.letterPaper}>
+              <div className={styles.letterTopFlourish} aria-hidden="true">
+                <svg viewBox="0 0 200 18" fill="none">
+                  <path d="M6 9 C 38 3, 72 14, 100 9 C 128 4, 162 2, 194 9" stroke="#c9a96b" strokeWidth="1.1" strokeLinecap="round" opacity="0.9" />
+                  <path d="M92 9 l 2.2 4.2 4.6 0.6 -3.3 3.2 0.8 4.6 -4.3 -2.2 -4.3 2.2 0.8 -4.6 -3.3 -3.2 4.6 -0.6 Z" fill="#c9a96b" opacity="0.95" />
+                  <path d="M100 5.5 l 1.6 3 3.4 0.5 -2.4 2.4 0.6 3.4 -3.2 -1.7 -3.2 1.7 0.6 -3.4 -2.4 -2.4 3.4 -0.5 Z" fill="#ffe9ad" />
+                </svg>
+              </div>
+              <p className={`${styles.ink} ${styles.inkLead}`} data-ink-a>
+                You are invited&hellip;
+              </p>
+              <p className={`${styles.ink} ${styles.inkFollow}`} data-ink-b>
+                &hellip;to witness a story written in the stars.
+              </p>
+              <div className={styles.inkFlourish} data-ink-flourish aria-hidden="true">
+                <svg viewBox="0 0 120 10" fill="none">
+                  <path d="M2 5 C 28 1, 52 9, 76 5.2 C 94 3, 108 2.2, 118 5" stroke="#8a6a3a" strokeWidth="1" strokeLinecap="round" opacity="0.75" />
+                  <path d="M74 5.2 C 76 2.8, 79 1.5, 82 3.2" stroke="#8a6a3a" strokeWidth="0.9" strokeLinecap="round" opacity="0.6" />
+                </svg>
+              </div>
+            </div>
+            <div className={styles.waxSeal} data-wax-seal aria-hidden="true">
+              <span className={styles.waxSealInner}>✦</span>
+            </div>
           </div>
         </div>
 
