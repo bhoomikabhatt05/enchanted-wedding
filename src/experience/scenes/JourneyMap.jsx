@@ -113,6 +113,9 @@ export default function JourneyMap() {
   const [wide, setWide] = useState(() =>
     typeof window === "undefined" ? true : window.innerWidth / window.innerHeight >= 1
   );
+  const [isNarrow, setIsNarrow] = useState(() =>
+    typeof window === "undefined" ? false : window.innerWidth <= 480
+  );
   const layout = wide ? WIDE : TALL;
 
   useGSAP(
@@ -151,9 +154,13 @@ export default function JourneyMap() {
       const prints = q("[data-prints]")[0];
       const ticks = ticksRef.current;
       const mq = window.matchMedia("(min-aspect-ratio: 1/1)");
+      const narrowMq = window.matchMedia("(max-width: 480px)");
       const onLayout = (e) => setWide(e.matches);
+      const onNarrow = (e) => setIsNarrow(e.matches);
       if (mq.addEventListener) mq.addEventListener("change", onLayout);
       else if (mq.addListener) mq.addListener(onLayout);
+      if (narrowMq.addEventListener) narrowMq.addEventListener("change", onNarrow);
+      else if (narrowMq.addListener) narrowMq.addListener(onNarrow);
 
       const updateActive = (index) => {
         if (activeRef.current === index) return;
@@ -461,6 +468,8 @@ export default function JourneyMap() {
         if (ro) ro.disconnect();
         if (mq.removeEventListener) mq.removeEventListener("change", onLayout);
         else if (mq.removeListener) mq.removeListener(onLayout);
+        if (narrowMq.removeEventListener) narrowMq.removeEventListener("change", onNarrow);
+        else if (narrowMq.removeListener) narrowMq.removeListener(onNarrow);
       };
     },
     { scope: rootRef, dependencies: [reducedMotion, milestones.length, wide] }
@@ -473,7 +482,7 @@ export default function JourneyMap() {
           <Label className={styles.chapter} sigil><MoonPhase phase="half" />{journey.chapter}</Label>
           <h2 className={styles.lede}>{journey.lede}</h2>
           <div className={styles.staticMap}>
-            <MapArt routeRef={routeRef} mapSrc={mapSrc} litAll layout={WIDE} notesOpacity={0.85} />
+            <MapArt routeRef={routeRef} mapSrc={mapSrc} litAll layout={WIDE} notesOpacity={0.85} isNarrow={isNarrow} />
           </div>
           <div className={styles.staticPrints}>
             {milestones.map((m) => (
@@ -504,7 +513,7 @@ export default function JourneyMap() {
         <div className={styles.backdrop} aria-hidden="true" />
 
         <div className={styles.mapDrift} aria-hidden="true">
-          <MapArt routeRef={routeRef} mapSrc={mapSrc} litAll={false} layout={layout} notesOpacity={0} />
+          <MapArt routeRef={routeRef} mapSrc={mapSrc} litAll={false} layout={layout} notesOpacity={0} isNarrow={isNarrow} />
         </div>
 
         <div ref={lightRef} className={styles.mapLight} aria-hidden="true" />
@@ -594,12 +603,12 @@ export default function JourneyMap() {
   );
 }
 
-function MapArt({ routeRef, mapSrc, litAll, layout, notesOpacity }) {
+function MapArt({ routeRef, mapSrc, litAll, layout, notesOpacity, isNarrow }) {
   return (
     <svg
       className={styles.mapSvg}
       viewBox={`0 0 ${MAP_W} ${MAP_H}`}
-      preserveAspectRatio="xMidYMid slice"
+      preserveAspectRatio={isNarrow ? "xMidYMid meet" : "xMidYMid slice"}
       role="img"
       aria-label="An illustrated magical map with a golden thread passing through five stars"
     >

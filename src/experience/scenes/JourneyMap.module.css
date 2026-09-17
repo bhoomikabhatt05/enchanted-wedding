@@ -42,6 +42,42 @@
   z-index: 1;
 }
 
+/* Portrait phones: letterbox the parchment so the illustration is read
+   as a window onto a larger map, not a cropped slice. The stage backdrop
+   becomes parchment so the meet bars are warm, not navy. */
+@media (max-width: 480px) {
+  .stage {
+    background:
+      radial-gradient(120% 90% at 50% 28%, #2a1f14 0%, #1a140e 38%, #0e0a06 72%, #07050a 100%);
+  }
+
+  .backdrop {
+    background:
+      radial-gradient(100% 72% at 50% 30%, #2a1f14 0%, #1a140e 42%, #0e0a06 74%),
+      linear-gradient(180deg, #e9d5a8 0%, #d8c5a0 100%);
+    opacity: 0.22;
+  }
+
+  .mapDrift {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6vh 0 8vh;
+  }
+
+  .mapSvg {
+    width: 100%;
+    height: auto;
+    max-height: 74vh;
+    max-width: 100%;
+    filter: sepia(0.14) saturate(1.02) contrast(1.02) brightness(0.96);
+    box-shadow:
+      0 18px 48px rgba(0, 0, 0, 0.55),
+      0 2px 10px rgba(0, 0, 0, 0.35);
+    border-radius: 2px;
+  }
+}
+
 .mapSvg {
   display: block;
   width: 100%;
